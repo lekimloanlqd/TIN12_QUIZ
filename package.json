@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "QUIZ SMART – Học vui, luyện tập thông minh - Tin học 12",
   "scripts": {
-    "build": "echo 'Vercel build completed successfully'",
-    "start": "serve ."
+    "build": "node build.js",
+    "start": "node build.js"
   }
 }

@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUIZ SMART – Học Vui, Luyện Tập Thông Minh</title>
+  <meta name="description" content="Nền tảng ôn tập trắc nghiệm Tin học 12 trực tuyến phong cách Quizizz - Bài 7: HTML và Cấu trúc trang web">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lexend:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Lexend', 'sans-serif'],
+            quicksand: ['Quicksand', 'sans-serif'],
+          },
+          colors: {
+            quiz: {
+              purple: '#6C5CE7',
+              darkPurple: '#4834D4',
+              pink: '#E84393',
+              blue: '#0984E3',
+              yellow: '#FDCB6E',
+              orange: '#E17055',
+              green: '#00B894',
+              red: '#D63031',
+              dark: '#1E1B4B',
+              bg: '#F8F9FE',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Lexend', sans-serif;
+      background-color: #F8F9FE;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .quiz-card-shadow {
+      box-shadow: 0 10px 25px -5px rgba(108, 92, 231, 0.1), 0 8px 10px -6px rgba(108, 92, 231, 0.05);
+    }
+    .option-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-card:hover {
+      transform: translateY(-2px);
+    }
+    .option-card:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="bg-white border-b border-slate-100 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-quiz-darkPurple to-quiz-purple flex items-center justify-center text-white shadow-md shadow-quiz-purple/30">
+          <i class="fa-solid fa-bolt text-lg"></i>
+        </div>
+        <div>
+          <h1 class="font-black text-lg text-quiz-darkPurple tracking-wide leading-none">QUIZ SMART</h1>
+          <p class="text-[11px] font-medium text-slate-500">Học vui – Luyện tập thông minh</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button id="soundToggleBtn" onclick="toggleSound()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+          <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+        </button>
+
+        <button onclick="openTeacherLoginModal()" class="px-3.5 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-quiz-purple font-bold text-xs flex items-center space-x-1.5 transition border border-purple-200/60">
+          <i class="fa-solid fa-user-shield"></i>
+          <span class="hidden sm:inline">Giáo viên</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-1">
+
+    <!-- 1. SCREEN: HOME -->
+    <div id="screen-home" class="space-y-6">
+      <!-- Hero Banner -->
+      <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-quiz-purple via-quiz-darkPurple to-indigo-950 text-white relative overflow-hidden shadow-xl shadow-quiz-purple/20">
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-white pointer-events-none">
+          <i class="fa-solid fa-graduation-cap text-9xl"></i>
+        </div>
+
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <div class="flex flex-wrap gap-2 items-center">
+            <span class="px-3 py-1 rounded-lg bg-quiz-yellow text-slate-900 font-bold text-xs uppercase tracking-wider">
+              Tin học 12 • THPT
+            </span>
+            <span class="px-3 py-1 rounded-lg bg-white/20 text-white font-semibold text-xs backdrop-blur-sm">
+              26 Ý Đánh Giá Chuẩn
+            </span>
+          </div>
+
+          <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+            Bài 7: HTML và Cấu Trúc Trang Web
+          </h2>
+
+          <p class="text-white/80 text-sm leading-relaxed">
+            Học sinh tham gia làm bài ngay ở chế độ Khách (Guest) không cần đăng nhập tài khoản. Có chấm điểm, xếp hạng và giải thích chi tiết từng câu từ tài liệu gốc.
+          </p>
+
+          <div class="pt-2 flex flex-wrap gap-3">
+            <button onclick="openGuestJoinModal('bai-7-html')" class="px-6 py-3 rounded-xl bg-quiz-green hover:bg-emerald-500 text-white font-bold text-sm flex items-center space-x-2 transition shadow-lg shadow-quiz-green/30">
+              <i class="fa-solid fa-play"></i>
+              <span>Vào Làm Bài Ngay (Khách)</span>
+            </button>
+            <button onclick="openPinModal()" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-sm flex items-center space-x-2 transition">
+              <i class="fa-solid fa-key"></i>
+              <span>Nhập Mã PIN</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full sm:w-80">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+          <input type="text" id="searchInput" oninput="renderQuizList()" placeholder="Tìm bài tập, mã PIN..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm">
+        </div>
+        <div class="text-xs text-slate-500 font-semibold flex items-center space-x-1.5 self-end sm:self-center">
+          <i class="fa-solid fa-layer-group text-quiz-purple"></i>
+          <span>Danh sách bài tập ôn luyện</span>
+        </div>
+      </div>
+
+      <!-- Quizzes List -->
+      <div id="quizListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- 2. SCREEN: QUIZ ACTIVE -->
+    <div id="screen-quiz" class="hidden space-y-4">
+      <!-- Quiz Top Session Bar -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between gap-3">
+        <button onclick="confirmExitQuiz()" class="text-slate-400 hover:text-slate-600 px-2 py-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+
+        <!-- Center Gamification (Streak & Timer) -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <div id="streakBadge" class="hidden px-2.5 py-1 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 font-black text-xs flex items-center space-x-1">
+            <i class="fa-solid fa-fire text-amber-500"></i>
+            <span id="streakCountText">Streak 2x</span>
+          </div>
+
+          <div id="timerContainer" class="hidden px-3 py-1 rounded-xl bg-purple-50 text-quiz-darkPurple font-bold text-xs flex items-center space-x-1.5 border border-purple-100">
+            <i class="fa-regular fa-clock text-quiz-purple"></i>
+            <span id="timerText">20:00</span>
+          </div>
+
+          <span id="questionProgressText" class="px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">
+            Câu 1 / 14
+          </span>
+        </div>
+
+        <button onclick="openQuestionGridModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="Xem tất cả câu hỏi">
+          <i class="fa-solid fa-grid-2"></i>
+          <i class="fa-solid fa-list-ol"></i>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+        <div id="progressBar" class="bg-quiz-purple h-full transition-all duration-300" style="width: 7%;"></div>
+      </div>
+
+      <!-- Question Card Container -->
+      <div id="activeQuestionCard" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-6">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Exam Mode Navigation Footer (When in Exam Mode) -->
+      <div id="examNavFooter" class="hidden bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+        <button onclick="prevQuestion()" id="prevQuestionBtn" class="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-sm text-slate-600 flex items-center space-x-2 transition">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Câu trước</span>
+        </button>
+
+        <button onclick="nextOrSubmitExam()" id="nextQuestionBtn" class="px-5 py-2.5 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-sm flex items-center space-x-2 transition">
+          <span id="nextBtnText">Tiếp theo</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. SCREEN: QUIZ RESULT -->
+    <div id="screen-result" class="hidden space-y-6">
+      <!-- Hero Score Box -->
+      <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-quiz-purple via-quiz-darkPurple to-purple-950 text-white text-center space-y-4 shadow-xl">
+        <div class="w-16 h-16 rounded-full bg-white/20 mx-auto flex items-center justify-center text-quiz-yellow text-3xl shadow-inner">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-black tracking-wide">HOÀN THÀNH BÀI ÔN TẬP!</h2>
+          <p id="resultStudentInfo" class="text-white/80 text-sm font-medium mt-1">Nguyễn Mai Anh • Lớp 12/1B</p>
+        </div>
+
+        <div class="py-2">
+          <div class="text-5xl font-black" id="resultScore">9.2</div>
+          <p class="text-white/70 text-sm font-bold mt-1">trên thang điểm 10.0</p>
+        </div>
+
+        <div class="inline-block px-4 py-1.5 rounded-xl bg-white/20 text-xs font-semibold backdrop-blur-sm" id="resultPointsBadge">
+          Đạt 24 / 26 ý đánh giá (92.3%)
+        </div>
+      </div>
+
+      <!-- 3 Metrics Cards -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 text-center shadow-sm">
+          <p class="text-xs text-slate-500 font-medium">Số ý đúng</p>
+          <p id="metricCorrect" class="text-2xl font-black text-quiz-green mt-1">24</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 text-center shadow-sm">
+          <p class="text-xs text-slate-500 font-medium">Số ý sai</p>
+          <p id="metricIncorrect" class="text-2xl font-black text-quiz-red mt-1">2</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 text-center shadow-sm">
+          <p class="text-xs text-slate-500 font-medium">Thời gian</p>
+          <p id="metricDuration" class="text-2xl font-black text-quiz-blue mt-1">12:30</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button onclick="retryCurrentQuiz()" class="px-6 py-3 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-sm flex items-center space-x-2 transition shadow-md shadow-quiz-purple/20">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Làm Lại Bài Này</span>
+        </button>
+        <button onclick="shareResult()" class="px-5 py-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-sm flex items-center space-x-2 transition">
+          <i class="fa-solid fa-share-nodes text-quiz-purple"></i>
+          <span>Chia Sẻ Kết Quả</span>
+        </button>
+        <button onclick="navigateTo('home')" class="px-5 py-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-sm flex items-center space-x-2 transition">
+          <i class="fa-solid fa-house"></i>
+          <span>Trang Chủ</span>
+        </button>
+      </div>
+
+      <!-- Review Section -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900">Chi Tiết Đáp Án & Lời Giải</h3>
+            <p class="text-xs text-slate-500">Xem giải thích chi tiết trích từ tài liệu gốc cho từng câu</p>
+          </div>
+          <div class="flex items-center space-x-1.5 text-xs">
+            <button onclick="filterReview('all')" id="filterAllBtn" class="px-3 py-1 rounded-lg bg-quiz-purple text-white font-bold">Tất cả</button>
+            <button onclick="filterReview('wrong')" id="filterWrongBtn" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200">Câu sai</button>
+            <button onclick="filterReview('correct')" id="filterCorrectBtn" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200">Câu đúng</button>
+          </div>
+        </div>
+
+        <div id="reviewQuestionsList" class="space-y-4 pt-2">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SCREEN: TEACHER DASHBOARD -->
+    <div id="screen-dashboard" class="hidden space-y-6">
+      <!-- Dashboard Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div>
+          <h2 class="text-xl font-black text-quiz-darkPurple">BẢNG ĐIỀU KHIỂN GIÁO VIÊN</h2>
+          <p class="text-xs text-slate-500">Quản lý kết quả học sinh (Guest & Account), thống kê và xuất điểm</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="exportCsvData()" class="px-4 py-2 rounded-xl bg-quiz-green hover:bg-emerald-600 text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
+            <i class="fa-solid fa-file-excel"></i>
+            <span>Xuất Excel / CSV</span>
+          </button>
+          <button onclick="logoutTeacher()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs flex items-center space-x-1 transition">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Đăng xuất</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Tabs -->
+      <div class="flex border-b border-slate-200 space-x-6 text-sm font-bold">
+        <button onclick="switchDashboardTab('overview')" id="tabOverviewBtn" class="pb-3 text-quiz-purple border-b-2 border-quiz-purple transition">
+          <i class="fa-solid fa-chart-pie mr-1"></i> Tổng Quan
+        </button>
+        <button onclick="switchDashboardTab('results')" id="tabResultsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+          <i class="fa-solid fa-table-list mr-1"></i> Bảng Điểm Học Sinh
+        </button>
+        <button onclick="switchDashboardTab('settings')" id="tabSettingsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+          <i class="fa-solid fa-gear mr-1"></i> Cài Đặt Bài Tập & PIN
+        </button>
+      </div>
+
+      <!-- Tab: Overview -->
+      <div id="dashTab-overview" class="space-y-5">
+        <!-- 4 KPI Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="flex justify-between items-center text-slate-500 text-xs font-semibold">
+              <span>Tổng học sinh</span>
+              <i class="fa-solid fa-users text-quiz-purple"></i>
+            </div>
+            <p id="kpiTotalStudents" class="text-2xl font-black text-slate-900 mt-2">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="flex justify-between items-center text-slate-500 text-xs font-semibold">
+              <span>Lượt làm bài</span>
+              <i class="fa-solid fa-clipboard-check text-quiz-blue"></i>
+            </div>
+            <p id="kpiTotalAttempts" class="text-2xl font-black text-slate-900 mt-2">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="flex justify-between items-center text-slate-500 text-xs font-semibold">
+              <span>Điểm trung bình</span>
+              <i class="fa-solid fa-star text-quiz-yellow"></i>
+            </div>
+            <p id="kpiAvgScore" class="text-2xl font-black text-quiz-purple mt-2">0.0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="flex justify-between items-center text-slate-500 text-xs font-semibold">
+              <span>Tỷ lệ đúng TB</span>
+              <i class="fa-solid fa-percent text-quiz-green"></i>
+            </div>
+            <p id="kpiAvgAccuracy" class="text-2xl font-black text-quiz-green mt-2">0%</p>
+          </div>
+        </div>
+
+        <!-- Score Distribution & Guest Analysis -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-slate-900">Phân Bố Điểm Số</h3>
+            <div id="scoreDistBars" class="space-y-2.5 text-xs">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-slate-900">Hình Thức Tham Gia</h3>
+            <div id="typeDistBars" class="space-y-2.5 text-xs">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Results Table -->
+      <div id="dashTab-results" class="hidden space-y-4">
+        <!-- Filter Controls -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div class="relative w-full md:w-72">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+            <input type="text" id="teacherSearchInput" oninput="renderResultsTable()" placeholder="Tìm học sinh theo tên..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+          </div>
+
+          <div class="flex items-center gap-2 w-full md:w-auto">
+            <select id="teacherClassSelect" onchange="renderResultsTable()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none">
+              <option value="ALL">Tất cả các lớp</option>
+              <option value="12/1B">Lớp 12/1B</option>
+              <option value="12A1">Lớp 12A1</option>
+              <option value="12A2">Lớp 12A2</option>
+              <option value="12A3">Lớp 12A3</option>
+              <option value="12A4">Lớp 12A4</option>
+            </select>
+
+            <select id="teacherTypeSelect" onchange="renderResultsTable()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none">
+              <option value="ALL">Mọi hình thức</option>
+              <option value="GUEST">Khách (Guest)</option>
+              <option value="ACCOUNT">Tài khoản</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
+              <tr>
+                <th class="p-3.5">STT</th>
+                <th class="p-3.5">Họ và tên</th>
+                <th class="p-3.5">Lớp</th>
+                <th class="p-3.5">Hình thức</th>
+                <th class="p-3.5">Điểm (/10)</th>
+                <th class="p-3.5">Số ý đúng</th>
+                <th class="p-3.5">Thời gian</th>
+                <th class="p-3.5">Ngày nộp</th>
+                <th class="p-3.5 text-center">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Settings -->
+      <div id="dashTab-settings" class="hidden space-y-4">
+        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4 max-w-2xl">
+          <h3 class="font-extrabold text-base text-slate-900">Cài Đặt Bài Tập & Mã PIN Tham Gia</h3>
+
+          <div class="p-4 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-purple-700">Mã PIN Bài 7:</p>
+              <p class="text-2xl font-black text-quiz-darkPurple tracking-widest mt-0.5">789123</p>
+            </div>
+            <button onclick="copyToClipboard('789123', 'Đã sao chép mã PIN!')" class="px-4 py-2 rounded-xl bg-quiz-purple text-white text-xs font-bold hover:bg-quiz-darkPurple transition">
+              <i class="fa-solid fa-copy mr-1"></i> Sao chép PIN
+            </button>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+            <div class="truncate mr-3">
+              <p class="text-xs font-semibold text-slate-500">Đường link làm bài trực tiếp:</p>
+              <p class="text-xs font-bold text-slate-800 truncate mt-0.5" id="shareLinkText">https://quizsmart.vercel.app/quiz/bai-7-html</p>
+            </div>
+            <button onclick="copyToClipboard(window.location.origin, 'Đã sao chép đường link bài tập!')" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold transition whitespace-nowrap">
+              <i class="fa-solid fa-link mr-1"></i> Sao chép link
+            </button>
+          </div>
+
+          <div class="pt-2 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-bold text-slate-800">Thời gian làm bài</p>
+                <p class="text-xs text-slate-500">20 phút (Tự động đếm ngược)</p>
+              </div>
+              <span class="px-3 py-1 rounded-lg bg-slate-100 font-bold text-xs text-slate-700">20 phút</span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-bold text-slate-800">Cho phép làm lại bài</p>
+                <p class="text-xs text-slate-500">Học sinh có thể thử sức nhiều lần để cải thiện điểm</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">Đang bật</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal: Guest Join -->
+  <div id="modal-guest-join" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-black text-lg text-quiz-darkPurple">QUIZ SMART – VÀO LÀM BÀI</h3>
+          <p id="guestModalQuizTitle" class="text-xs text-slate-500 font-medium">Bài 7: HTML và Cấu Trúc Trang Web</p>
+        </div>
+        <button onclick="closeModal('modal-guest-join')" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center space-x-2 text-xs text-emerald-800 font-semibold">
+        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+        <span>Chế độ Khách (Guest): Không cần tạo tài khoản hay mật khẩu!</span>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Họ và tên học sinh *</label>
+          <input type="text" id="guestNameInput" placeholder="Ví dụ: Nguyễn Mai Anh" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Lớp học *</label>
+          <select id="guestClassInput" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm bg-white">
+            <option value="12/1B">Lớp 12/1B</option>
+            <option value="12A1">Lớp 12A1</option>
+            <option value="12A2">Lớp 12A2</option>
+            <option value="12A3">Lớp 12A3</option>
+            <option value="12A4">Lớp 12A4</option>
+            <option value="12Tin">Lớp 12 Chuyên Tin</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1.5">Chọn chế độ làm bài:</label>
+          <div class="space-y-2">
+            <label class="flex items-center space-x-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="practiceMode" value="INSTANT" checked class="text-quiz-purple focus:ring-quiz-purple">
+              <div>
+                <p class="font-bold text-slate-800">Luyện tập từng câu</p>
+                <p class="text-[11px] text-slate-500">Xem đúng/sai và lời giải chi tiết ngay sau mỗi câu</p>
+              </div>
+            </label>
+            <label class="flex items-center space-x-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="practiceMode" value="EXAM" class="text-quiz-purple focus:ring-quiz-purple">
+              <div>
+                <p class="font-bold text-slate-800">Kiểm tra tính điểm</p>
+                <p class="text-[11px] text-slate-500">Làm toàn bộ bài, có thể quay lại sửa trước khi nộp</p>
+              </div>
+            </label>
+            <label class="flex items-center space-x-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="practiceMode" value="CHALLENGE" class="text-quiz-purple focus:ring-quiz-purple">
+              <div>
+                <p class="font-bold text-slate-800">Thử thách Quizizz</p>
+                <p class="text-[11px] text-slate-500">Đồng hồ đếm ngược, chuỗi Streak combo điểm thưởng</p>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div id="guestJoinError" class="hidden text-xs text-quiz-red font-semibold"></div>
+
+      <button onclick="startGuestQuiz()" class="w-full py-3 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-sm transition shadow-lg shadow-quiz-purple/20">
+        BẮT ĐẦU LÀM BÀI
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal: PIN Code -->
+  <div id="modal-pin" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl text-center">
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-quiz-yellow mx-auto flex items-center justify-center text-xl">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h3 class="font-black text-lg text-slate-900">Tham Gia Bằng Mã PIN</h3>
+      <p class="text-xs text-slate-500">Nhập mã PIN 6 chữ số do giáo viên chia sẻ</p>
+
+      <input type="text" id="pinCodeInput" maxlength="6" placeholder="Ví dụ: 789123" class="w-full text-center text-2xl font-black tracking-widest px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+
+      <p class="text-[11px] text-slate-400">Gợi ý: Mã PIN bài 7 là <strong>789123</strong></p>
+
+      <div class="flex gap-2">
+        <button onclick="closeModal('modal-pin')" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs">Hủy</button>
+        <button onclick="submitPinCode()" class="flex-1 py-2.5 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-xs">Vào bài</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Teacher Login -->
+  <div id="modal-teacher-login" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-purple-100 text-quiz-purple flex items-center justify-center">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h3 class="font-extrabold text-base text-slate-900">Đăng Nhập Giáo Viên</h3>
+      </div>
+      <p class="text-xs text-slate-500">Dành cho giáo viên quản trị bài tập và theo dõi bảng điểm học sinh.</p>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tài khoản</label>
+          <input type="text" id="teacherUsername" value="giaovien" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Mật khẩu</label>
+          <input type="password" id="teacherPassword" value="123456" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+        </div>
+        <div class="p-2.5 rounded-lg bg-purple-50 text-[11px] text-purple-700 font-semibold">
+          Tài khoản mẫu: <strong>giaovien</strong> / Mật khẩu: <strong>123456</strong>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeModal('modal-teacher-login')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">Đóng</button>
+        <button onclick="loginTeacher()" class="flex-1 py-2.5 rounded-xl bg-quiz-purple text-white font-bold text-xs hover:bg-quiz-darkPurple">Đăng nhập</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Question Navigator Sheet -->
+  <div id="modal-question-grid" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-black text-base text-quiz-darkPurple">Danh Sách Câu Hỏi</h3>
+        <button onclick="closeModal('modal-question-grid')" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <p class="text-xs text-slate-500">Bấm vào số câu để chuyển đến câu hỏi đó:</p>
+
+      <div id="questionGridContainer" class="grid grid-cols-5 gap-2.5 pt-2">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="pt-3">
+        <button onclick="closeModal('modal-question-grid'); confirmSubmitQuiz()" class="w-full py-2.5 rounded-xl bg-quiz-green text-white font-bold text-xs hover:bg-emerald-600">
+          Nộp bài kiểm tra ngay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-xl opacity-0 transition-opacity pointer-events-none z-50">
+    Thông báo
+  </div>
+
+  <!-- ================= LOGIC SCRIPT ================= -->
+  <script>
+    // Audio Synthesizer with Web Audio API
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now); // D5
+          osc.frequency.setValueAtTime(880.00, now + 0.1); // A5
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(164.81, now + 0.1);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'streak') {
+          osc.type = 'sine';
+          [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.frequency.value = f;
+            g.gain.setValueAtTime(0.15, now + i * 0.08);
+            g.gain.exponentialRampToValueAtTime(0.001, now + (i + 1) * 0.08 + 0.1);
+            o.start(now + i * 0.08);
+            o.stop(now + (i + 1) * 0.08 + 0.1);
+          });
+        }
+      } catch (e) {
+        console.warn('Audio play failed', e);
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      if (soundEnabled) {
+        icon.className = 'fa-solid fa-volume-high';
+        showToast('Đã bật âm thanh');
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark';
+        showToast('Đã tắt âm thanh');
+      }
+    }
+
+    // Database & Sample Question Dataset for Bai 7
+    const sampleQuizzes = [
+      {
+        id: 'bai-7-html',
+        title: 'Bài 7: HTML và Cấu Trúc Trang Web',
+        subject: 'Tin học 12',
+        grade: 'Khối 12',
+        teacherName: 'Lưu Gia Ly (GV Tin học 12/1B)',
+        pinCode: '789123',
+        durationMinutes: 20,
+        totalPoints: 26,
+        totalQuestions: 14,
+        description: 'Đầy đủ 10 câu trắc nghiệm nhiều lựa chọn và 4 bối cảnh đúng/sai theo chương trình GDPT Tin học 12.'
+      },
+      {
+        id: 'bai-8-dinh-dang',
+        title: 'Bài 8: Định Dạng Văn Bản & Siêu Liên Kết',
+        subject: 'Tin học 12',
+        grade: 'Khối 12',
+        teacherName: 'Tổ Tin Học',
+        pinCode: '456789',
+        durationMinutes: 15,
+        totalPoints: 26,
+        totalQuestions: 14,
+        description: 'Luyện tập các thẻ định dạng khối, liên kết a href và danh sách ol, ul.'
+      }
+    ];
+
+    const questionsBai7 = [
+      // PHẦN 1: 10 CÂU TRẮC NGHIỆM ĐƠN (1 ĐÁP ÁN ĐÚNG)
+      {
+        id: 1,
+        part: 1,
+        type: 'MCQ',
+        level: 'Nhận biết',
+        prompt: 'HTML là viết tắt của cụm từ nào sau đây?',
+        options: [
+          'A. Hypertext Markup Language.',
+          'B. Hyperlink Text Management Language.',
+          'C. Hightext Markup Language.',
+          'D. Hypermedia Text Management Language.'
+        ],
+        correctIndex: 0,
+        explanation: 'HTML là viết tắt của Hypertext Markup Language, nghĩa là ngôn ngữ đánh dấu siêu văn bản.'
+      },
+      {
+        id: 2,
+        part: 1,
+        type: 'MCQ',
+        level: 'Nhận biết',
+        prompt: 'Một tệp HTML thường có phần mở rộng nào sau đây?',
+        options: [
+          'A. .doc hoặc .docx.',
+          'B. .html hoặc .htm.',
+          'C. .ppt hoặc .pptx.',
+          'D. .jpg hoặc .png.'
+        ],
+        correctIndex: 1,
+        explanation: 'Tệp HTML thường có phần mở rộng .html hoặc .htm.'
+      },
+      {
+        id: 3,
+        part: 1,
+        type: 'MCQ',
+        level: 'Nhận biết',
+        prompt: 'Các kí tự đánh dấu HTML (tag) được viết trong cặp dấu nào?',
+        options: [
+          'A. Dấu ngoặc tròn "(", ")".',
+          'B. Dấu ngoặc vuông "[", "]".',
+          'C. Dấu "<", ">".',
+          'D. Dấu ngoặc nhọn "{", "}".'
+        ],
+        correctIndex: 2,
+        explanation: 'Thẻ HTML được viết trong cặp dấu "<", ">".'
+      },
+      {
+        id: 4,
+        part: 1,
+        type: 'MCQ',
+        level: 'Nhận biết',
+        prompt: 'Phát biểu nào sau đây đúng về dòng <!DOCTYPE html> trong tệp HTML?',
+        options: [
+          'A. Đây là một phần tử HTML bắt buộc nằm trong <body>.',
+          'B. Đây là thẻ đóng của phần tử <html>.',
+          'C. Đây là nội dung sẽ hiển thị trực tiếp trên trang web.',
+          'D. Đây là dòng khai báo cho trình duyệt biết tệp có định dạng HTML.'
+        ],
+        correctIndex: 3,
+        explanation: '<!DOCTYPE html> thông báo cho trình duyệt biết đây là tệp có định dạng HTML; sách coi đây là dòng khai báo HTML, không phải phần tử HTML.'
+      },
+      {
+        id: 5,
+        part: 1,
+        type: 'MCQ',
+        level: 'Thông hiểu',
+        prompt: 'Phương án nào mô tả đúng nhất về "phần tử HTML"?',
+        options: [
+          'A. Chỉ là tên của một thẻ HTML được viết giữa hai dấu "<", ">".',
+          'B. Là toàn bộ phần thẻ và nội dung của thẻ trong trang web.',
+          'C. Chỉ là phần nội dung văn bản được trình duyệt hiển thị.',
+          'D. Là tên tệp HTML kèm theo phần mở rộng .html của tệp.'
+        ],
+        correctIndex: 1,
+        explanation: 'Phần tử HTML được hiểu là toàn bộ phần thẻ và nội dung của thẻ.'
+      },
+      {
+        id: 6,
+        part: 1,
+        type: 'MCQ',
+        level: 'Thông hiểu',
+        prompt: 'Trong cấu trúc tệp HTML, quan hệ giữa phần tử <div> và phần tử <h1> được đặt bên trong <div> có thể hình dung như thế nào?',
+        options: [
+          'A. Quan hệ giữa hai phần tử hoàn toàn độc lập.',
+          'B. Quan hệ giữa hai phần tử cùng nằm ở nút gốc.',
+          'C. Quan hệ cha – con trong cây thông tin HTML.',
+          'D. Quan hệ giữa trình duyệt và tệp văn bản nguồn.'
+        ],
+        correctIndex: 2,
+        explanation: 'Các phần tử HTML có thể lồng nhau và quan hệ lồng nhau có thể hình dung như quan hệ cha – con trong cây thông tin.'
+      },
+      {
+        id: 7,
+        part: 1,
+        type: 'MCQ',
+        level: 'Thông hiểu',
+        prompt: 'Trong cấu trúc cơ bản của tệp HTML, phần tử <head> có vai trò nào sau đây?',
+        options: [
+          'A. Chứa các phần tử liên quan chung đến toàn bộ trang web.',
+          'B. Chứa tất cả thông tin nội dung sẽ hiển thị trên trang web.',
+          'C. Chỉ chứa các đoạn văn bản được trình bày bằng thẻ <p>.',
+          'D. Chỉ chứa các hình ảnh được chèn trực tiếp vào trang web.'
+        ],
+        correctIndex: 0,
+        explanation: '<head> chứa các phần tử liên quan chung đến toàn bộ trang web; <title>, <meta>, <style>, <script> thường có thể nằm trong phần này.'
+      },
+      {
+        id: 8,
+        part: 1,
+        type: 'MCQ',
+        level: 'Vận dụng thực tế',
+        prompt: 'Bạn An muốn đặt nội dung chính của trang web, như tiêu đề, đoạn văn và các phần tử nội dung khác. Theo cấu trúc cơ bản của HTML, An nên đặt các nội dung đó chủ yếu trong phần tử nào?',
+        options: [
+          'A. <meta>.',
+          'B. <title>.',
+          'C. <head>.',
+          'D. <body>.'
+        ],
+        correctIndex: 3,
+        explanation: '<body> chứa tất cả các phần tử còn lại là thông tin của trang web.'
+      },
+      {
+        id: 9,
+        part: 1,
+        type: 'MCQ',
+        level: 'Vận dụng thực tế',
+        prompt: 'Một bạn viết đoạn mã: <p>Trang này do <em>nhóm bạn bè</em> lập</p>. Nhận xét nào phù hợp với kiến thức về cấu trúc HTML?',
+        options: [
+          'A. <em> là phần tử gốc của toàn bộ tệp HTML.',
+          'B. Phần tử <em> được lồng bên trong phần tử <p>.',
+          'C. Phần tử <p> được lồng bên trong phần tử <em>.',
+          'D. Hai phần tử <p> và <em> luôn phải đứng độc lập.'
+        ],
+        correctIndex: 1,
+        explanation: '<em> nằm bên trong <p>, vì vậy phần tử <em> là phần tử con được lồng trong phần tử <p>.'
+      },
+      {
+        id: 10,
+        part: 1,
+        type: 'MCQ',
+        level: 'Vận dụng thực tế',
+        prompt: 'Một học sinh sử dụng trang web hỗ trợ soạn thảo HTML trực tuyến. Theo bài học, thao tác nào phù hợp với cách làm này?',
+        options: [
+          'A. Soạn mã ở khung bên phải rồi tắt trình duyệt để xem kết quả.',
+          'B. Soạn mã trong Notepad và không cần kết nối Internet.',
+          'C. Soạn mã ở khung bên trái, nháy Run để kiểm tra kết quả ở khung bên phải.',
+          'D. Chỉ cần nhập tên tệp HTML, hệ thống sẽ tự tạo toàn bộ mã nguồn.'
+        ],
+        correctIndex: 2,
+        explanation: 'Với trình soạn thảo HTML trực tuyến, mã được soạn ở khung bên trái và có thể nháy Run để kiểm tra kết quả ở khung bên phải; cách này cần Internet và trình duyệt.'
+      },
+
+      // PHẦN 2: 4 BỐI CẢNH ĐÚNG / SAI (16 Ý ĐÁNH GIÁ)
+      {
+        id: 11,
+        part: 2,
+        type: 'TF',
+        contextTitle: 'Bối cảnh 1 – Quan sát một trang web',
+        contextDesc: 'Mai mở một trang web bằng trình duyệt và đồng thời xem tệp văn bản nguồn của trang. Cô nhận thấy nội dung trong tệp nguồn có các kí hiệu như <html>, <head>, <body>, <p>.',
+        prompt: 'Đọc bối cảnh và xác định mỗi khẳng định sau là Đúng hay Sai:',
+        statements: [
+          { key: 'a', level: 'Biết', text: 'HTML là viết tắt của Hypertext Markup Language.', isTrue: true, explanation: 'HTML là viết tắt của Hypertext Markup Language.' },
+          { key: 'b', level: 'Hiểu', text: 'Tệp văn bản nguồn của trang web có thể chứa các thẻ HTML dùng để xác định các phần tử HTML.', isTrue: true, explanation: 'Các thẻ HTML xác định các phần tử HTML trong tệp nguồn.' },
+          { key: 'c', level: 'Hiểu', text: 'Trình duyệt web có chức năng hiển thị thông tin của trang web theo định dạng được thiết lập trong HTML.', isTrue: true, explanation: 'Trình duyệt có chức năng hiển thị nội dung trang web theo định dạng đã thiết lập.' },
+          { key: 'd', level: 'Vận dụng', text: 'Vì trang web được hiển thị bằng trình duyệt nên tệp nguồn HTML không cần tồn tại dưới dạng tệp văn bản.', isTrue: false, explanation: 'Trang HTML được thiết lập từ các tệp văn bản; việc hiển thị bằng trình duyệt không loại bỏ vai trò của tệp nguồn.' }
+        ]
+      },
+      {
+        id: 12,
+        part: 2,
+        type: 'TF',
+        contextTitle: 'Bối cảnh 2 – Nhận diện thẻ và phần tử',
+        contextDesc: 'Nam có đoạn mã: <p>Trang này được lập bởi <em>nhóm bạn bè</em></p>. Bạn ấy muốn hiểu cách các phần tử HTML lồng nhau.',
+        prompt: 'Đọc bối cảnh và xác định mỗi khẳng định sau là Đúng hay Sai:',
+        statements: [
+          { key: 'a', level: 'Biết', text: '<p> và <em> đều là các thẻ HTML xuất hiện trong đoạn mã.', isTrue: true, explanation: '<p> và <em> là các thẻ HTML.' },
+          { key: 'b', level: 'Hiểu', text: 'Phần tử HTML có thể hiểu là toàn bộ phần thẻ và nội dung của thẻ.', isTrue: true, explanation: 'Phần tử HTML gồm thẻ và nội dung của thẻ.' },
+          { key: 'c', level: 'Hiểu', text: 'Trong đoạn mã trên, <em> được lồng bên trong <p>, nên có thể hình dung quan hệ giữa chúng là cha – con.', isTrue: true, explanation: '<em> được lồng trong <p>, nên có quan hệ cha – con trong cây thông tin.' },
+          { key: 'd', level: 'Vận dụng', text: 'Nếu đổi vị trí để <p> nằm hoàn toàn bên trong <em>, cấu trúc sẽ vẫn giống hệt đoạn mã ban đầu vì thứ tự lồng nhau không ảnh hưởng đến quan hệ phần tử.', isTrue: false, explanation: 'Thay đổi quan hệ lồng nhau sẽ làm thay đổi cấu trúc cây; không thể coi hai cách sắp xếp là hoàn toàn giống nhau.' }
+        ]
+      },
+      {
+        id: 13,
+        part: 2,
+        type: 'TF',
+        contextTitle: 'Bối cảnh 3 – Tổ chức cấu trúc tệp HTML',
+        contextDesc: 'Lan đang tạo một tệp HTML có cấu trúc gồm <!DOCTYPE html>, <html>, <head>, <body>. Bạn ấy cần xác định nơi đặt thông tin chung và nội dung trang.',
+        prompt: 'Đọc bối cảnh và xác định mỗi khẳng định sau là Đúng hay Sai:',
+        statements: [
+          { key: 'a', level: 'Biết', text: 'Phần tử <html> là phần tử bắt buộc và là phần tử gốc của cây HTML.', isTrue: true, explanation: '<html> là phần tử bắt buộc và là nút gốc của cây HTML.' },
+          { key: 'b', level: 'Hiểu', text: 'Phần tử <head> thường chứa các phần tử liên quan chung đến toàn bộ trang web, trong đó có thể có <title>.', isTrue: true, explanation: '<head> chứa thông tin liên quan chung đến toàn bộ trang; <title> thường nằm trong đó.' },
+          { key: 'c', level: 'Hiểu', text: 'Phần tử <meta> nằm trong <head> và có thể dùng để mô tả thông tin bổ sung như cách mã hoá Unicode.', isTrue: true, explanation: '<meta> nằm trong <head> và có thể mô tả thông tin bổ sung như cách mã hoá Unicode.' },
+          { key: 'd', level: 'Vận dụng', text: 'Muốn đưa các đoạn văn bản nội dung của trang vào đúng khu vực hiển thị chính, Lan nên đặt chúng trong <head> thay vì <body>.', isTrue: false, explanation: '<body> mới là nơi chứa các phần tử còn lại là thông tin của trang web; không phải <head>.' }
+        ]
+      },
+      {
+        id: 14,
+        part: 2,
+        type: 'TF',
+        contextTitle: 'Bối cảnh 4 – Soạn thảo HTML',
+        contextDesc: 'Huy muốn tạo tệp HTML. Bạn ấy cân nhắc dùng Notepad, Notepad++, Sublime Text hoặc một trang soạn thảo HTML trực tuyến.',
+        prompt: 'Đọc bối cảnh và xác định mỗi khẳng định sau là Đúng hay Sai:',
+        statements: [
+          { key: 'a', level: 'Biết', text: 'Notepad là phần mềm soạn thảo văn bản đơn giản, có sẵn trên hệ điều hành Windows.', isTrue: true, explanation: 'Notepad là trình soạn thảo văn bản đơn giản có sẵn trên Windows.' },
+          { key: 'b', level: 'Hiểu', text: 'Notepad++ là phần mềm mã nguồn mở, miễn phí và hỗ trợ soạn thảo chương trình với nhiều ngôn ngữ, trong đó có HTML.', isTrue: true, explanation: 'Notepad++ là phần mềm mã nguồn mở, miễn phí và hỗ trợ nhiều ngôn ngữ, có HTML.' },
+          { key: 'c', level: 'Hiểu', text: 'Khi dùng trang hỗ trợ soạn thảo HTML trực tuyến, máy tính cần có kết nối Internet và trình duyệt; người dùng có thể nháy Run để kiểm tra kết quả.', isTrue: true, explanation: 'Soạn thảo HTML trực tuyến cần Internet và trình duyệt; Run dùng để kiểm tra kết quả.' },
+          { key: 'd', level: 'Vận dụng', text: 'Các trình duyệt như Chrome, Firefox và Microsoft Edge được xếp cùng nhóm với Notepad++ và Sublime Text vì đều là phần mềm soạn thảo HTML.', isTrue: false, explanation: 'Chrome, Firefox và Microsoft Edge là trình duyệt web, không phải nhóm phần mềm soạn thảo HTML như Notepad++ và Sublime Text.' }
+        ]
+      }
+    ];
+
+    // Local Storage Database Management
+    const STORAGE_KEY = 'quiz_smart_attempts_v1';
+
+    function getStoredAttempts() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.error('Error loading stored attempts', e);
+      }
+      // Initial mock data if empty
+      const initial = [
+        {
+          attemptId: 'att-001',
+          quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+          studentName: 'Nguyễn Mai Anh',
+          className: '12/1B',
+          participationType: 'GUEST',
+          score: 9.2,
+          correctCount: 24,
+          totalPoints: 26,
+          accuracyRate: 92.3,
+          durationSeconds: 720,
+          submittedAt: Date.now() - 3600000 * 2
+        },
+        {
+          attemptId: 'att-002',
+          quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+          studentName: 'Trần Nam Phong',
+          className: '12/1B',
+          participationType: 'GUEST',
+          score: 8.5,
+          correctCount: 22,
+          totalPoints: 26,
+          accuracyRate: 84.6,
+          durationSeconds: 850,
+          submittedAt: Date.now() - 3600000 * 5
+        },
+        {
+          attemptId: 'att-003',
+          quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+          studentName: 'Lê Hoàng Lan',
+          className: '12A1',
+          participationType: 'ACCOUNT',
+          score: 10.0,
+          correctCount: 26,
+          totalPoints: 26,
+          accuracyRate: 100.0,
+          durationSeconds: 610,
+          submittedAt: Date.now() - 3600000 * 12
+        }
+      ];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+      return initial;
+    }
+
+    function saveAttempt(attempt) {
+      const list = getStoredAttempts();
+      list.unshift(attempt);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    // Current State
+    let currentSession = null;
+    let timerInterval = null;
+    let lastCompletedAttempt = null;
+
+    // Navigation Router
+    function navigateTo(screenName) {
+      ['home', 'quiz', 'result', 'dashboard'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      document.getElementById(`screen-${screenName}`).classList.remove('hidden');
+      window.scrollTo(0, 0);
+
+      if (screenName === 'home') renderQuizList();
+      if (screenName === 'dashboard') loadDashboardOverview();
+    }
+
+    // Render Quizzes on Home
+    function renderQuizList() {
+      const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+      const container = document.getElementById('quizListContainer');
+      const filtered = sampleQuizzes.filter(item =>
+        item.title.toLowerCase().includes(q) ||
+        item.subject.toLowerCase().includes(q) ||
+        item.pinCode.includes(q)
+      );
+
+      container.innerHTML = filtered.map(item => `
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 quiz-card-shadow flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-md bg-purple-50 text-quiz-purple text-xs font-bold">${item.subject}</span>
+              <span class="text-xs font-extrabold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-md flex items-center gap-1">
+                <i class="fa-solid fa-key text-[10px]"></i> PIN: ${item.pinCode}
+              </span>
+            </div>
+            <h3 class="font-bold text-base text-slate-900 leading-snug">${item.title}</h3>
+            <p class="text-xs text-slate-500">${item.description}</p>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+            <div class="flex items-center space-x-3 text-xs text-slate-500">
+              <span><i class="fa-regular fa-clock mr-1 text-quiz-blue"></i>${item.durationMinutes}p</span>
+              <span><i class="fa-solid fa-circle-check mr-1 text-quiz-green"></i>${item.totalPoints} ý</span>
+            </div>
+            <button onclick="openGuestJoinModal('${item.id}')" class="px-4 py-2 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white text-xs font-bold transition">
+              Làm bài
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal helpers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function openGuestJoinModal(quizId) {
+      const quiz = sampleQuizzes.find(q => q.id === quizId) || sampleQuizzes[0];
+      document.getElementById('guestModalQuizTitle').innerText = quiz.title;
+      document.getElementById('guestJoinError').classList.add('hidden');
+      openModal('modal-guest-join');
+    }
+
+    function openPinModal() {
+      openModal('modal-pin');
+    }
+
+    function submitPinCode() {
+      const pin = document.getElementById('pinCodeInput').value.trim();
+      const matched = sampleQuizzes.find(q => q.pinCode === pin);
+      if (matched) {
+        closeModal('modal-pin');
+        openGuestJoinModal(matched.id);
+      } else {
+        alert('Không tìm thấy bài tập nào với mã PIN này. Vui lòng nhập mã: 789123');
+      }
+    }
+
+    // Start Quiz Session
+    function startGuestQuiz() {
+      const name = document.getElementById('guestNameInput').value.trim();
+      const className = document.getElementById('guestClassInput').value;
+      const mode = document.querySelector('input[name="practiceMode"]:checked').value;
+
+      if (!name) {
+        const err = document.getElementById('guestJoinError');
+        err.innerText = 'Vui lòng nhập Họ và tên để bắt đầu!';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      closeModal('modal-guest-join');
+
+      let questions = JSON.parse(JSON.stringify(questionsBai7));
+      if (mode === 'CHALLENGE') {
+        questions = questions.sort(() => Math.random() - 0.5);
+      }
+
+      currentSession = {
+        studentName: name,
+        className: className,
+        practiceMode: mode,
+        questions: questions,
+        currentIndex: 0,
+        selectedOptions: {},     // qId -> optIndex
+        trueFalseAnswers: {},    // qId -> {a: true, b: false...}
+        isAnswerChecked: false,
+        streak: 0,
+        timeRemaining: 20 * 60,
+        startTime: Date.now()
+      };
+
+      navigateTo('quiz');
+      renderQuizSession();
+
+      if (mode === 'CHALLENGE') {
+        document.getElementById('timerContainer').classList.remove('hidden');
+        startTimer();
+      } else {
+        document.getElementById('timerContainer').classList.add('hidden');
+      }
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!currentSession) return;
+        currentSession.timeRemaining--;
+        const m = Math.floor(currentSession.timeRemaining / 60);
+        const s = currentSession.timeRemaining % 60;
+        document.getElementById('timerText').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+
+        if (currentSession.timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          alert('Đã hết thời gian làm bài! Hệ thống tự động nộp bài.');
+          submitQuiz();
+        }
+      }, 1000);
+    }
+
+    // Render Quiz Question
+    function renderQuizSession() {
+      const q = currentSession.questions[currentSession.currentIndex];
+      const total = currentSession.questions.length;
+      const idx = currentSession.currentIndex;
+
+      // Top bar updates
+      document.getElementById('questionProgressText').innerText = `Câu ${idx + 1} / ${total}`;
+      const pct = Math.round(((idx + 1) / total) * 100);
+      document.getElementById('progressBar').style.width = `${pct}%`;
+
+      const streakBadge = document.getElementById('streakBadge');
+      if (currentSession.streak > 1) {
+        streakBadge.classList.remove('hidden');
+        document.getElementById('streakCountText').innerText = `Streak ${currentSession.streak}x`;
+      } else {
+        streakBadge.classList.add('hidden');
+      }
+
+      const card = document.getElementById('activeQuestionCard');
+      const isExam = currentSession.practiceMode === 'EXAM';
+      const isChecked = currentSession.isAnswerChecked && currentSession.practiceMode === 'INSTANT';
+
+      // Multiple Choice Card
+      if (q.type === 'MCQ') {
+        const selectedOpt = currentSession.selectedOptions[q.id];
+        const optionColors = ['bg-pink-500', 'bg-blue-500', 'bg-amber-500', 'bg-teal-500'];
+
+        let optionsHtml = q.options.map((optText, optIdx) => {
+          const isSelected = selectedOpt === optIdx;
+          const isCorrect = optIdx === q.correctIndex;
+
+          let cardBorder = 'border-slate-200';
+          let cardBg = 'bg-white';
+          if (isSelected) {
+            cardBorder = 'border-quiz-purple ring-2 ring-quiz-purple/20';
+            cardBg = 'bg-purple-50/50';
+          }
+          if (isChecked) {
+            if (isCorrect) {
+              cardBorder = 'border-quiz-green ring-2 ring-emerald-500/20';
+              cardBg = 'bg-emerald-50';
+            } else if (isSelected && !isCorrect) {
+              cardBorder = 'border-quiz-red ring-2 ring-red-500/20';
+              cardBg = 'bg-red-50';
+            }
+          }
+
+          return `
+            <div onclick="selectMcqOption(${q.id}, ${optIdx})" class="option-card p-4 rounded-2xl border-2 ${cardBorder} ${cardBg} cursor-pointer flex items-center justify-between">
+              <div class="flex items-center space-x-3.5">
+                <span class="w-8 h-8 rounded-full ${optionColors[optIdx % 4]} text-white font-black text-sm flex items-center justify-center flex-shrink-0">
+                  ${String.fromCharCode(65 + optIdx)}
+                </span>
+                <span class="text-sm font-semibold text-slate-800">${optText.replace(/^[A-D]\.\s*/, '')}</span>
+              </div>
+              <div>
+                ${isChecked && isCorrect ? '<i class="fa-solid fa-circle-check text-quiz-green text-lg"></i>' : ''}
+                ${isChecked && isSelected && !isCorrect ? '<i class="fa-solid fa-circle-xmark text-quiz-red text-lg"></i>' : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-lg bg-purple-50 text-quiz-darkPurple font-bold text-xs">PHẦN 1: TRẮC NGHIỆM ĐƠN</span>
+            <span class="text-xs text-slate-400 font-medium">${q.level}</span>
+          </div>
+
+          <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+            Câu ${idx + 1}: ${q.prompt}
+          </h3>
+
+          <div class="grid grid-cols-1 gap-3 pt-2">
+            ${optionsHtml}
+          </div>
+
+          ${isChecked ? `
+            <div class="p-4 rounded-2xl ${selectedOpt === q.correctIndex ? 'bg-emerald-50 border border-emerald-100 text-emerald-900' : 'bg-red-50 border border-red-100 text-red-900'} space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-extrabold text-sm flex items-center gap-1.5">
+                  <i class="fa-solid ${selectedOpt === q.correctIndex ? 'fa-circle-check text-quiz-green' : 'fa-circle-xmark text-quiz-red'}"></i>
+                  ${selectedOpt === q.correctIndex ? 'CHÍNH XÁC! 🎉' : 'CHƯA CHÍNH XÁC! 💡'}
+                </span>
+                <button onclick="nextQuestion()" class="px-4 py-2 rounded-xl bg-quiz-darkPurple text-white font-bold text-xs hover:bg-quiz-purple">
+                  ${idx === total - 1 ? 'Xem kết quả' : 'Tiếp tục <i class="fa-solid fa-arrow-right ml-1"></i>'}
+                </button>
+              </div>
+              <p class="text-xs text-slate-700 leading-relaxed font-medium">💡 Giải thích: ${q.explanation}</p>
+            </div>
+          ` : ''}
+        `;
+      } else {
+        // True/False Context Card
+        const tfMap = currentSession.trueFalseAnswers[q.id] || {};
+        let statementsHtml = q.statements.map(st => {
+          const val = tfMap[st.key];
+          const hasAnswered = val !== undefined;
+
+          return `
+            <div class="p-4 rounded-2xl border border-slate-200 bg-white space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded bg-purple-50 text-quiz-darkPurple font-bold text-[11px]">Ý ${st.key}) [${st.level}]</span>
+                ${isChecked && hasAnswered ? `
+                  <span class="text-[11px] font-bold ${val === st.isTrue ? 'text-quiz-green' : 'text-quiz-red'}">
+                    ${val === st.isTrue ? '<i class="fa-solid fa-check"></i> ĐÚNG' : '<i class="fa-solid fa-xmark"></i> CHƯA ĐÚNG'}
+                  </span>
+                ` : ''}
+              </div>
+
+              <p class="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed">${st.text}</p>
+
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="selectTfAnswer(${q.id}, '${st.key}', true)" class="py-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${val === true ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}">
+                  <i class="fa-solid fa-check"></i> ĐÚNG
+                </button>
+                <button onclick="selectTfAnswer(${q.id}, '${st.key}', false)" class="py-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${val === false ? 'bg-red-500 text-white border-red-500' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}">
+                  <i class="fa-solid fa-xmark"></i> SAI
+                </button>
+              </div>
+
+              ${isChecked ? `
+                <div class="p-2.5 rounded-lg bg-slate-50 text-[11px] text-slate-600">
+                  💡 Giải thích: ${st.explanation}
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+
+        const allAnswered = Object.keys(tfMap).length === 4;
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-700 font-bold text-xs">PHẦN 2: TRẮC NGHIỆM ĐÚNG / SAI</span>
+            <span class="text-xs text-slate-400 font-medium">${q.level || '4 ý đánh giá'}</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <h4 class="font-extrabold text-sm text-quiz-darkPurple">${q.contextTitle}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed font-medium">${q.contextDesc}</p>
+          </div>
+
+          <h3 class="text-sm sm:text-base font-bold text-slate-900">${q.prompt}</h3>
+
+          <div class="space-y-3">
+            ${statementsHtml}
+          </div>
+
+          ${currentSession.practiceMode === 'INSTANT' && !isChecked ? `
+            <div class="pt-2">
+              <button onclick="checkTfAnswers()" class="w-full py-3 rounded-xl bg-quiz-darkPurple text-white font-bold text-xs hover:bg-quiz-purple transition">
+                Kiểm tra 4 ý này
+              </button>
+            </div>
+          ` : ''}
+
+          ${isChecked ? `
+            <div class="pt-2">
+              <button onclick="nextQuestion()" class="w-full py-3 rounded-xl bg-quiz-purple text-white font-bold text-xs hover:bg-quiz-darkPurple transition">
+                ${idx === total - 1 ? 'Xem kết quả' : 'Tiếp tục câu sau'}
+              </button>
+            </div>
+          ` : ''}
+        `;
+      }
+
+      // Exam Mode Footer
+      const examFooter = document.getElementById('examNavFooter');
+      if (isExam) {
+        examFooter.classList.remove('hidden');
+        document.getElementById('prevQuestionBtn').disabled = idx === 0;
+        document.getElementById('nextBtnText').innerText = (idx === total - 1) ? 'Nộp bài' : 'Tiếp theo';
+      } else {
+        examFooter.classList.add('hidden');
+      }
+    }
+
+    // Question Interaction Handlers
+    function selectMcqOption(qId, optIdx) {
+      if (currentSession.practiceMode === 'INSTANT' && currentSession.isAnswerChecked) return;
+
+      currentSession.selectedOptions[qId] = optIdx;
+
+      if (currentSession.practiceMode === 'INSTANT') {
+        const q = currentSession.questions[currentSession.currentIndex];
+        const isCorrect = optIdx === q.correctIndex;
+        currentSession.isAnswerChecked = true;
+
+        if (isCorrect) {
+          currentSession.streak++;
+          playSound(currentSession.streak >= 3 ? 'streak' : 'correct');
+        } else {
+          currentSession.streak = 0;
+          playSound('wrong');
+        }
+      }
+      renderQuizSession();
+    }
+
+    function selectTfAnswer(qId, key, val) {
+      if (!currentSession.trueFalseAnswers[qId]) {
+        currentSession.trueFalseAnswers[qId] = {};
+      }
+      currentSession.trueFalseAnswers[qId][key] = val;
+      renderQuizSession();
+    }
+
+    function checkTfAnswers() {
+      const q = currentSession.questions[currentSession.currentIndex];
+      const tfMap = currentSession.trueFalseAnswers[q.id] || {};
+      const allCorrect = q.statements.every(st => tfMap[st.key] === st.isTrue);
+
+      currentSession.isAnswerChecked = true;
+      if (allCorrect) {
+        currentSession.streak++;
+        playSound(currentSession.streak >= 3 ? 'streak' : 'correct');
+      } else {
+        currentSession.streak = 0;
+        playSound('wrong');
+      }
+      renderQuizSession();
+    }
+
+    function nextQuestion() {
+      if (currentSession.currentIndex < currentSession.questions.length - 1) {
+        currentSession.currentIndex++;
+        currentSession.isAnswerChecked = false;
+        renderQuizSession();
+        window.scrollTo(0, 0);
+      } else {
+        submitQuiz();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentSession.currentIndex > 0) {
+        currentSession.currentIndex--;
+        currentSession.isAnswerChecked = false;
+        renderQuizSession();
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function nextOrSubmitExam() {
+      if (currentSession.currentIndex < currentSession.questions.length - 1) {
+        nextQuestion();
+      } else {
+        confirmSubmitQuiz();
+      }
+    }
+
+    function confirmSubmitQuiz() {
+      if (confirm('Bạn có chắc chắn muốn nộp bài? Toàn bộ kết quả sẽ được chấm điểm và lưu vào cơ sở dữ liệu.')) {
+        submitQuiz();
+      }
+    }
+
+    function confirmExitQuiz() {
+      if (confirm('Thoát khỏi bài luyện tập? Kết quả lượt làm này sẽ không được lưu.')) {
+        clearInterval(timerInterval);
+        currentSession = null;
+        navigateTo('home');
+      }
+    }
+
+    // Submit Quiz & Grade
+    function submitQuiz() {
+      clearInterval(timerInterval);
+      const now = Date.now();
+      const durationSec = Math.max(1, Math.round((now - currentSession.startTime) / 1000));
+
+      // 26 evaluation points:
+      // 10 MCQs = 10 pts
+      // 4 contexts x 4 statements = 16 pts
+      let correctCount = 0;
+      const totalPoints = 26;
+
+      currentSession.questions.forEach(q => {
+        if (q.type === 'MCQ') {
+          if (currentSession.selectedOptions[q.id] === q.correctIndex) {
+            correctCount++;
+          }
+        } else {
+          const tfMap = currentSession.trueFalseAnswers[q.id] || {};
+          q.statements.forEach(st => {
+            if (tfMap[st.key] === st.isTrue) {
+              correctCount++;
+            }
+          });
+        }
+      });
+
+      const scoreOutOf10 = Number(((correctCount / totalPoints) * 10).toFixed(1));
+      const accuracyRate = Number(((correctCount / totalPoints) * 100).toFixed(1));
+
+      const attemptRecord = {
+        attemptId: 'att-' + Date.now(),
+        quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+        studentName: currentSession.studentName,
+        className: currentSession.className,
+        participationType: 'GUEST',
+        score: scoreOutOf10,
+        correctCount: correctCount,
+        totalPoints: totalPoints,
+        accuracyRate: accuracyRate,
+        durationSeconds: durationSec,
+        submittedAt: now,
+        sessionData: currentSession
+      };
+
+      saveAttempt(attemptRecord);
+      lastCompletedAttempt = attemptRecord;
+
+      playSound('streak');
+      showResultScreen(attemptRecord);
+    }
+
+    // Display Result Screen
+    function showResultScreen(att) {
+      document.getElementById('resultStudentInfo').innerText = `${att.studentName} • Lớp ${att.className}`;
+      document.getElementById('resultScore').innerText = att.score;
+      document.getElementById('resultPointsBadge').innerText = `Đạt ${att.correctCount} / ${att.totalPoints} ý đánh giá (${att.accuracyRate}%)`;
+      document.getElementById('metricCorrect').innerText = att.correctCount;
+      document.getElementById('metricIncorrect').innerText = att.totalPoints - att.correctCount;
+
+      const m = Math.floor(att.durationSeconds / 60);
+      const s = att.durationSeconds % 60;
+      document.getElementById('metricDuration').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+
+      renderReviewList('all');
+      navigateTo('result');
+    }
+
+    function renderReviewList(filter) {
+      const container = document.getElementById('reviewQuestionsList');
+      const session = lastCompletedAttempt.sessionData;
+
+      const itemsHtml = session.questions.map((q, idx) => {
+        if (q.type === 'MCQ') {
+          const userChoice = session.selectedOptions[q.id];
+          const isCorrect = userChoice === q.correctIndex;
+          if (filter === 'wrong' && isCorrect) return '';
+          if (filter === 'correct' && !isCorrect) return '';
+
+          return `
+            <div class="p-4 rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-red-200 bg-red-50/20'} space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}">
+                  ${isCorrect ? '<i class="fa-solid fa-circle-check"></i> ĐÚNG' : '<i class="fa-solid fa-circle-xmark"></i> SAI'}
+                </span>
+                <span class="text-[11px] text-slate-400">Câu ${idx + 1} (${q.level})</span>
+              </div>
+              <p class="text-xs sm:text-sm font-bold text-slate-800">${q.prompt}</p>
+
+              <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                <div class="p-2 rounded-lg bg-slate-100">
+                  <span class="text-slate-500">Bạn chọn:</span>
+                  <span class="font-bold ${isCorrect ? 'text-quiz-green' : 'text-quiz-red'}">${userChoice !== undefined ? String.fromCharCode(65 + userChoice) : 'Chưa chọn'}</span>
+                </div>
+                <div class="p-2 rounded-lg bg-emerald-100 text-emerald-900 font-bold">
+                  <span>Đáp án đúng:</span>
+                  <span>${String.fromCharCode(65 + q.correctIndex)}</span>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-100 font-medium">💡 Giải thích: ${q.explanation}</p>
+            </div>
+          `;
+        } else {
+          const tfMap = session.trueFalseAnswers[q.id] || {};
+          const isAllTfCorrect = q.statements.every(st => tfMap[st.key] === st.isTrue);
+          if (filter === 'wrong' && isAllTfCorrect) return '';
+          if (filter === 'correct' && !isAllTfCorrect) return '';
+
+          const stRows = q.statements.map(st => {
+            const userVal = tfMap[st.key];
+            const isStCorrect = userVal === st.isTrue;
+            return `
+              <div class="p-2.5 rounded-lg bg-white border border-slate-100 space-y-1">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-slate-800">Ý ${st.key}) ${st.text}</span>
+                  <span class="font-bold ${isStCorrect ? 'text-quiz-green' : 'text-quiz-red'}">
+                    ${isStCorrect ? '✓ Đúng' : '✗ Sai'}
+                  </span>
+                </div>
+                <div class="text-[11px] text-slate-500 flex gap-4">
+                  <span>Bạn chọn: <strong>${userVal === true ? 'Đúng' : userVal === false ? 'Sai' : 'Chưa'}</strong></span>
+                  <span>Đáp án: <strong class="text-emerald-700">${st.isTrue ? 'Đúng' : 'Sai'}</strong></span>
+                </div>
+                <p class="text-[11px] text-slate-500 italic">• ${st.explanation}</p>
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="p-4 rounded-2xl border ${isAllTfCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-amber-200 bg-amber-50/20'} space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs ${isAllTfCorrect ? 'text-emerald-700' : 'text-amber-700'}">${q.contextTitle}</span>
+                <span class="text-[11px] text-slate-400">Bối cảnh ${idx - 9}/4</span>
+              </div>
+              <div class="space-y-2">
+                ${stRows}
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      container.innerHTML = itemsHtml || '<p class="text-center text-xs text-slate-400 py-4">Không có câu nào phù hợp với bộ lọc.</p>';
+    }
+
+    function filterReview(type) {
+      ['all', 'wrong', 'correct'].forEach(t => {
+        const btn = document.getElementById(`filter${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
+        if (t === type) {
+          btn.className = 'px-3 py-1 rounded-lg bg-quiz-purple text-white font-bold';
+        } else {
+          btn.className = 'px-3 py-1 rounded-lg bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200';
+        }
+      });
+      renderReviewList(type);
+    }
+
+    function retryCurrentQuiz() {
+      if (lastCompletedAttempt) {
+        openGuestJoinModal('bai-7-html');
+      }
+    }
+
+    function shareResult() {
+      if (lastCompletedAttempt) {
+        const text = `Kết quả Quiz Smart: ${lastCompletedAttempt.studentName} (Lớp ${lastCompletedAttempt.className}) đạt ${lastCompletedAttempt.score}/10 điểm (${lastCompletedAttempt.correctCount}/26 ý đúng) Bài 7 Tin học 12!`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text);
+          showToast('Đã sao chép kết quả vào bộ nhớ đệm!');
+        } else {
+          alert(text);
+        }
+      }
+    }
+
+    // Question Grid Modal
+    function openQuestionGridModal() {
+      const container = document.getElementById('questionGridContainer');
+      const questions = currentSession.questions;
+
+      container.innerHTML = questions.map((q, i) => {
+        const isCurrent = i === currentSession.currentIndex;
+        let isAnswered = false;
+        if (q.type === 'MCQ') {
+          isAnswered = currentSession.selectedOptions[q.id] !== undefined;
+        } else {
+          isAnswered = Object.keys(currentSession.trueFalseAnswers[q.id] || {}).length === 4;
+        }
+
+        let bg = 'bg-slate-100 text-slate-700';
+        if (isCurrent) bg = 'bg-quiz-purple text-white font-black';
+        else if (isAnswered) bg = 'bg-emerald-500 text-white font-bold';
+
+        return `
+          <button onclick="jumpToQuestion(${i})" class="h-10 rounded-xl ${bg} text-xs transition flex items-center justify-center">
+            ${i + 1}
+          </button>
+        `;
+      }).join('');
+
+      openModal('modal-question-grid');
+    }
+
+    function jumpToQuestion(i) {
+      closeModal('modal-question-grid');
+      currentSession.currentIndex = i;
+      currentSession.isAnswerChecked = false;
+      renderQuizSession();
+    }
+
+    // Teacher Portal & Dashboard Logic
+    function openTeacherLoginModal() {
+      openModal('modal-teacher-login');
+    }
+
+    function loginTeacher() {
+      const u = document.getElementById('teacherUsername').value;
+      const p = document.getElementById('teacherPassword').value;
+      if (u === 'giaovien' && p === '123456') {
+        closeModal('modal-teacher-login');
+        navigateTo('dashboard');
+        showToast('Đăng nhập giáo viên thành công!');
+      } else {
+        alert('Sai tài khoản hoặc mật khẩu (Thử lại: giaovien / 123456)');
+      }
+    }
+
+    function logoutTeacher() {
+      navigateTo('home');
+      showToast('Đã đăng xuất giáo viên');
+    }
+
+    function switchDashboardTab(tabName) {
+      ['overview', 'results', 'settings'].forEach(t => {
+        document.getElementById(`dashTab-${t}`).classList.add('hidden');
+        document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`).className = 'pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition';
+      });
+
+      document.getElementById(`dashTab-${tabName}`).classList.remove('hidden');
+      document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Btn`).className = 'pb-3 text-quiz-purple border-b-2 border-quiz-purple transition';
+
+      if (tabName === 'overview') loadDashboardOverview();
+      if (tabName === 'results') renderResultsTable();
+    }
+
+    function loadDashboardOverview() {
+      const attempts = getStoredAttempts();
+      const studentNames = [...new Set(attempts.map(a => a.studentName))];
+
+      document.getElementById('kpiTotalStudents').innerText = studentNames.length;
+      document.getElementById('kpiTotalAttempts').innerText = attempts.length;
+
+      const avgScore = attempts.length ? (attempts.reduce((s, a) => s + a.score, 0) / attempts.length).toFixed(1) : '0.0';
+      const avgAcc = attempts.length ? Math.round(attempts.reduce((s, a) => s + a.accuracyRate, 0) / attempts.length) : '0';
+
+      document.getElementById('kpiAvgScore').innerText = avgScore;
+      document.getElementById('kpiAvgAccuracy').innerText = `${avgAcc}%`;
+
+      // Score distribution
+      const g = attempts.filter(a => a.score >= 8.5).length;
+      const k = attempts.filter(a => a.score >= 7.0 && a.score < 8.5).length;
+      const tb = attempts.filter(a => a.score >= 5.0 && a.score < 7.0).length;
+      const cd = attempts.filter(a => a.score < 5.0).length;
+      const tot = Math.max(1, attempts.length);
+
+      document.getElementById('scoreDistBars').innerHTML = `
+        <div>
+          <div class="flex justify-between font-semibold mb-1"><span>Giỏi (8.5 - 10.0)</span><span>${g} (${Math.round((g/tot)*100)}%)</span></div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-quiz-green h-full" style="width: ${(g/tot)*100}%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between font-semibold mb-1"><span>Khá (7.0 - 8.4)</span><span>${k} (${Math.round((k/tot)*100)}%)</span></div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-quiz-blue h-full" style="width: ${(k/tot)*100}%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between font-semibold mb-1"><span>Trung bình (5.0 - 6.9)</span><span>${tb} (${Math.round((tb/tot)*100)}%)</span></div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-quiz-yellow h-full" style="width: ${(tb/tot)*100}%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between font-semibold mb-1"><span>Chưa đạt (< 5.0)</span><span>${cd} (${Math.round((cd/tot)*100)}%)</span></div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-quiz-red h-full" style="width: ${(cd/tot)*100}%"></div></div>
+        </div>
+      `;
+
+      // Guest vs Account
+      const guests = attempts.filter(a => a.participationType === 'GUEST').length;
+      const accounts = attempts.filter(a => a.participationType === 'ACCOUNT').length;
+      document.getElementById('typeDistBars').innerHTML = `
+        <div>
+          <div class="flex justify-between font-semibold mb-1"><span>Khách (Guest - Không cần đăng nhập)</span><span>${guests}</span></div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-quiz-purple h-full" style="width: ${(guests/tot)*100}%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between font-semibold mb-1"><span>Tài khoản học sinh</span><span>${accounts}</span></div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-quiz-green h-full" style="width: ${(accounts/tot)*100}%"></div></div>
+        </div>
+      `;
+    }
+
+    function renderResultsTable() {
+      const attempts = getStoredAttempts();
+      const q = (document.getElementById('teacherSearchInput')?.value || '').toLowerCase();
+      const classFilter = document.getElementById('teacherClassSelect')?.value || 'ALL';
+      const typeFilter = document.getElementById('teacherTypeSelect')?.value || 'ALL';
+
+      const filtered = attempts.filter(a => {
+        const matchesQuery = a.studentName.toLowerCase().includes(q) || a.className.toLowerCase().includes(q);
+        const matchesClass = (classFilter === 'ALL') || (a.className === classFilter);
+        const matchesType = (typeFilter === 'ALL') || (a.participationType === typeFilter);
+        return matchesQuery && matchesClass && matchesType;
+      });
+
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = filtered.map((a, i) => {
+        const d = new Date(a.submittedAt);
+        const dateStr = `${d.getDate()}/${d.getMonth()+1} ${d.getHours()}:${d.getMinutes() < 10 ? '0' : ''}${d.getMinutes()}`;
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition">
+            <td class="p-3.5 font-bold text-slate-400">${i + 1}</td>
+            <td class="p-3.5 font-bold text-slate-800">${a.studentName}</td>
+            <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-slate-100 font-semibold">${a.className}</span></td>
+            <td class="p-3.5">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold ${a.participationType === 'GUEST' ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'}">
+                ${a.participationType === 'GUEST' ? 'Khách (Guest)' : 'Tài khoản'}
+              </span>
+            </td>
+            <td class="p-3.5 font-black text-sm ${a.score >= 8 ? 'text-quiz-green' : 'text-quiz-purple'}">${a.score}</td>
+            <td class="p-3.5 text-slate-600">${a.correctCount}/${a.totalPoints}</td>
+            <td class="p-3.5 text-slate-500">${a.durationSeconds}s</td>
+            <td class="p-3.5 text-slate-500">${dateStr}</td>
+            <td class="p-3.5 text-center">
+              <button onclick="deleteAttempt('${a.attemptId}')" class="text-slate-400 hover:text-quiz-red p-1" title="Xóa">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="9" class="p-6 text-center text-slate-400">Không tìm thấy kết quả nào phù hợp.</td></tr>';
+    }
+
+    function deleteAttempt(id) {
+      if (confirm('Xóa kết quả lượt làm bài này?')) {
+        let list = getStoredAttempts().filter(a => a.attemptId !== id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        renderResultsTable();
+        loadDashboardOverview();
+        showToast('Đã xóa lượt làm bài');
+      }
+    }
+
+    function exportCsvData() {
+      const attempts = getStoredAttempts();
+      let csv = 'STT,Họ và tên,Lớp,Hình thức,Điểm số (/10),Số câu đúng,Tổng số câu,Tỷ lệ (%),Thời gian (giây),Ngày nộp\n';
+      attempts.forEach((a, i) => {
+        const d = new Date(a.submittedAt).toLocaleString('vi-VN');
+        csv += `${i + 1},"${a.studentName}","${a.className}","${a.participationType}",${a.score},${a.correctCount},${a.totalPoints},${a.accuracyRate},${a.durationSeconds},"${d}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'Bang_diem_Quiz_Smart.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Đã xuất file bảng điểm thành công!');
+    }
+
+    // Toast helper
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.remove('opacity-0');
+      setTimeout(() => t.classList.add('opacity-0'), 2500);
+    }
+
+    function copyToClipboard(text, msg) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+        showToast(msg);
+      } else {
+        alert(text);
+      }
+    }
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuizList();
+    });
+  </script>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t border-slate-100 py-4 mt-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+      <p>© 2026 QUIZ SMART – Nền tảng ôn tập trắc nghiệm Tin học 12 trực tuyến</p>
+      <div class="flex items-center space-x-3">
+        <span>Bài 7: HTML & Cấu trúc trang web</span>
+        <span>•</span>
+        <span>Mã PIN: <strong>789123</strong></span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

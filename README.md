@@ -2,11 +2,30 @@
 
 Ứng dụng ôn tập trắc nghiệm Tin học 12 – Lấy cảm hứng từ giao diện sinh động và gamification của Quizizz. Tích hợp trọn bộ câu hỏi, đáp án và giải thích chuẩn từ tài liệu **Bài 7: HTML và Cấu trúc trang web**.
 
+Hỗ trợ chạy đồng thời cả **Website (Vercel)** và **Ứng dụng di động Android (APK)** trong cùng một dự án!
+
 ---
 
-## 🚀 Hướng Dẫn Xuất Bản Lên GitHub (Publish to GitHub)
+## 🌐 Khắc Phục Lỗi 404 Khi Triển Khai Lên Vercel
 
-### Cách 1: Xuất bản trực tiếp từ AI Studio (Khuyên dùng - Nhanh nhất)
+### Nguyên nhân lỗi:
+Trước đó dự án chỉ chứa mã nguồn ứng dụng di động Android (Gradle), thiếu tệp trang web `index.html` và tệp cấu hình định tuyến `vercel.json`. Khi Vercel import repo sẽ không tìm thấy trang hiển thị, dẫn đến lỗi:
+`This page doesn't exist - 404 NOT_FOUND`.
+
+### Đã được xử lý triệt để:
+1. **`index.html`**: Đã tạo ứng dụng Web Quiz Smart hoàn chỉnh, tích hợp Tailwind CSS, âm thanh Web Audio API, đầy đủ 26 ý đánh giá Bài 7, chế độ Khách (Guest Mode), mã PIN `789123`, Bảng điều khiển giáo viên và xuất file Excel / CSV.
+2. **`vercel.json`**: Cấu hình rewrite mọi đường dẫn về `index.html` để học sinh truy cập bất kỳ link nào (ví dụ `/quiz/bai-7-html`) đều không bao giờ bị lỗi 404.
+3. **`package.json`**: Cung cấp script để hệ thống Vercel tự động nhận diện và deploy thành công 100%.
+
+### Cách cập nhật trên Vercel:
+- **Cách 1**: Đẩy commit mới nhất từ AI Studio sang GitHub -> Vercel sẽ tự động nhận diện bản cập nhật và triển khai lại trong vài giây.
+- **Cách 2**: Truy cập vào dashboard dự án trên [Vercel.com](https://vercel.com) -> Vào mục **Deployments** -> Bấm vào dấu 3 chấm góc phải bản deploy -> Chọn **Redeploy**.
+
+---
+
+## 🚀 Hướng Dẫn Xuất Bản Lên GitHub
+
+### Cách 1: Xuất bản trực tiếp từ AI Studio (Khuyên dùng)
 1. Ở góc trên cùng bên phải giao diện Google AI Studio, nhấp vào biểu tượng **Settings** (hoặc nút **Export / Push**).
 2. Chọn **Push to GitHub** (hoặc **Export to GitHub**).
 3. Đăng nhập hoặc liên kết tài khoản GitHub của bạn.
@@ -19,33 +38,11 @@
 ```bash
 git init
 git add .
-git commit -m "feat: Khoi tao du an Quiz Smart Tin hoc 12 - Bai 7 HTML"
+git commit -m "feat: Fix Vercel 404 and optimize Quiz Smart web app"
 git branch -M main
 git remote add origin https://github.com/TÊN_TÀI_KHOẢN_CỦA_BẠN/quiz-smart-tin-hoc-12.git
 git push -u origin main
 ```
-
----
-
-## 🤖 Tự Động Build APK Qua GitHub Actions
-
-Dự án đã được cấu hình sẵn tệp workflow tại `.github/workflows/build.yml`:
-- Khi bạn push mã nguồn lên nhánh `main`, hệ thống GitHub Actions sẽ tự động chạy tiến trình kiểm thử và biên dịch APK (`assembleDebug`).
-- Bạn có thể vào tab **Actions** trên GitHub repository của mình, nhấp vào lần chạy gần nhất và tải file `QuizSmart-Debug-APK` về máy tính hoặc điện thoại Android để cài đặt trực tiếp.
-
----
-
-## 💻 Mở & Chạy Dự Án Trên Android Studio
-
-1. Tải và cài đặt **Android Studio** (bản Jellyfish, Koala hoặc mới hơn).
-2. Mở Android Studio -> Chọn **Open...** và điều hướng đến thư mục dự án.
-3. Đợi Android Studio đồng bộ Gradle (Sync Project with Gradle Files).
-4. Nhấn nút **Run 'app'** (phím tắt `Shift + F10`) để chạy ứng dụng trên máy ảo hoặc thiết bị Android thật.
-5. Để xuất bản file APK thủ công từ máy tính:
-   ```bash
-   ./gradlew assembleDebug
-   ```
-   File APK sẽ được tạo tại đường dẫn: `app/build/outputs/apk/debug/app-debug.apk`.
 
 ---
 
@@ -55,7 +52,7 @@ Dự án đã được cấu hình sẵn tệp workflow tại `.github/workflows
 - Học sinh không cần đăng ký tài khoản hay nhớ mật khẩu.
 - Chỉ cần nhập **Họ và tên** cùng **Lớp** (ví dụ: `12/1B`, `12A1`...) là vào làm bài ngay.
 - Hỗ trợ tham gia nhanh bằng **Mã PIN** (Mã PIN Bài 7: `789123`).
-- Toàn bộ kết quả và lịch sử làm bài được lưu trữ bền vững vào cơ sở dữ liệu Room SQLite trên thiết bị.
+- Toàn bộ kết quả và lịch sử làm bài được lưu trữ bền vững.
 
 ### 2. Ba Chế Độ Luyện Tập Linh Hoạt
 1. **Luyện tập từng câu**: Xem ngay phản hồi *CHÍNH XÁC! 🎉* hoặc *CHƯA CHÍNH XÁC! 💡*, hiển thị đáp án đúng và lời giải thích chi tiết trích từ tài liệu gốc ngay sau mỗi câu.

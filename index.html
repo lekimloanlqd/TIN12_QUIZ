@@ -688,6 +688,21 @@
       }
     }
 
+    // Helper to safely escape and highlight HTML tags (e.g. <html>, <head>, <!DOCTYPE html>, etc.)
+    function formatHtmlText(str) {
+      if (str === null || str === undefined) return '';
+      let text = String(str);
+      let escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+      return escaped.replace(/&lt;([\/!]?[a-zA-Z0-9_\-]+(?:(?!(?:&lt;|&gt;))[\s\S])*?)&gt;/g, function(match, p1) {
+        return '<code class="px-1.5 py-0.5 mx-0.5 rounded-md bg-purple-50 text-quiz-darkPurple font-mono font-bold text-[0.9em] border border-purple-200/80 inline-block">&lt;' + p1 + '&gt;</code>';
+      });
+    }
+
     // Database & Sample Question Dataset for Bai 7
     const sampleQuizzes = [
       {
@@ -1190,7 +1205,7 @@
                 <span class="w-8 h-8 rounded-full ${optionColors[optIdx % 4]} text-white font-black text-sm flex items-center justify-center flex-shrink-0">
                   ${String.fromCharCode(65 + optIdx)}
                 </span>
-                <span class="text-sm font-semibold text-slate-800">${optText.replace(/^[A-D]\.\s*/, '')}</span>
+                <span class="text-sm font-semibold text-slate-800">${formatHtmlText(optText.replace(/^[A-D]\.\s*/, ''))}</span>
               </div>
               <div>
                 ${isChecked && isCorrect ? '<i class="fa-solid fa-circle-check text-quiz-green text-lg"></i>' : ''}
@@ -1207,7 +1222,7 @@
           </div>
 
           <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-            Câu ${idx + 1}: ${q.prompt}
+            Câu ${idx + 1}: ${formatHtmlText(q.prompt)}
           </h3>
 
           <div class="grid grid-cols-1 gap-3 pt-2">
@@ -1225,7 +1240,7 @@
                   ${idx === total - 1 ? 'Xem kết quả' : 'Tiếp tục <i class="fa-solid fa-arrow-right ml-1"></i>'}
                 </button>
               </div>
-              <p class="text-xs text-slate-700 leading-relaxed font-medium">💡 Giải thích: ${q.explanation}</p>
+              <p class="text-xs text-slate-700 leading-relaxed font-medium">💡 Giải thích: ${formatHtmlText(q.explanation)}</p>
             </div>
           ` : ''}
         `;
@@ -1247,7 +1262,7 @@
                 ` : ''}
               </div>
 
-              <p class="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed">${st.text}</p>
+              <p class="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed">${formatHtmlText(st.text)}</p>
 
               <div class="grid grid-cols-2 gap-2 pt-1">
                 <button onclick="selectTfAnswer(${q.id}, '${st.key}', true)" class="py-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${val === true ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}">
@@ -1260,7 +1275,7 @@
 
               ${isChecked ? `
                 <div class="p-2.5 rounded-lg bg-slate-50 text-[11px] text-slate-600">
-                  💡 Giải thích: ${st.explanation}
+                  💡 Giải thích: ${formatHtmlText(st.explanation)}
                 </div>
               ` : ''}
             </div>
@@ -1276,11 +1291,11 @@
           </div>
 
           <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-            <h4 class="font-extrabold text-sm text-quiz-darkPurple">${q.contextTitle}</h4>
-            <p class="text-xs text-slate-600 leading-relaxed font-medium">${q.contextDesc}</p>
+            <h4 class="font-extrabold text-sm text-quiz-darkPurple">${formatHtmlText(q.contextTitle)}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed font-medium">${formatHtmlText(q.contextDesc)}</p>
           </div>
 
-          <h3 class="text-sm sm:text-base font-bold text-slate-900">${q.prompt}</h3>
+          <h3 class="text-sm sm:text-base font-bold text-slate-900">${formatHtmlText(q.prompt)}</h3>
 
           <div class="space-y-3">
             ${statementsHtml}
@@ -1482,6 +1497,11 @@
           if (filter === 'wrong' && isCorrect) return '';
           if (filter === 'correct' && !isCorrect) return '';
 
+          const userChoiceStr = userChoice !== undefined 
+            ? `${String.fromCharCode(65 + userChoice)}: ${formatHtmlText(q.options[userChoice].replace(/^[A-D]\.\s*/, ''))}` 
+            : 'Chưa chọn';
+          const correctChoiceStr = `${String.fromCharCode(65 + q.correctIndex)}: ${formatHtmlText(q.options[q.correctIndex].replace(/^[A-D]\.\s*/, ''))}`;
+
           return `
             <div class="p-4 rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-red-200 bg-red-50/20'} space-y-2">
               <div class="flex items-center justify-between">
@@ -1490,20 +1510,20 @@
                 </span>
                 <span class="text-[11px] text-slate-400">Câu ${idx + 1} (${q.level})</span>
               </div>
-              <p class="text-xs sm:text-sm font-bold text-slate-800">${q.prompt}</p>
+              <p class="text-xs sm:text-sm font-bold text-slate-800">${formatHtmlText(q.prompt)}</p>
 
-              <div class="grid grid-cols-2 gap-2 text-xs pt-1">
-                <div class="p-2 rounded-lg bg-slate-100">
-                  <span class="text-slate-500">Bạn chọn:</span>
-                  <span class="font-bold ${isCorrect ? 'text-quiz-green' : 'text-quiz-red'}">${userChoice !== undefined ? String.fromCharCode(65 + userChoice) : 'Chưa chọn'}</span>
+              <div class="space-y-1.5 text-xs pt-1">
+                <div class="p-2 rounded-lg bg-slate-100 flex items-start gap-1.5">
+                  <span class="text-slate-500 flex-shrink-0">Bạn chọn:</span>
+                  <span class="font-bold ${isCorrect ? 'text-quiz-green' : 'text-quiz-red'}">${userChoiceStr}</span>
                 </div>
-                <div class="p-2 rounded-lg bg-emerald-100 text-emerald-900 font-bold">
-                  <span>Đáp án đúng:</span>
-                  <span>${String.fromCharCode(65 + q.correctIndex)}</span>
+                <div class="p-2 rounded-lg bg-emerald-100 text-emerald-900 font-bold flex items-start gap-1.5">
+                  <span class="flex-shrink-0">Đáp án đúng:</span>
+                  <span>${correctChoiceStr}</span>
                 </div>
               </div>
 
-              <p class="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-100 font-medium">💡 Giải thích: ${q.explanation}</p>
+              <p class="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-100 font-medium">💡 Giải thích: ${formatHtmlText(q.explanation)}</p>
             </div>
           `;
         } else {
@@ -1518,7 +1538,7 @@
             return `
               <div class="p-2.5 rounded-lg bg-white border border-slate-100 space-y-1">
                 <div class="flex justify-between items-center text-xs">
-                  <span class="font-bold text-slate-800">Ý ${st.key}) ${st.text}</span>
+                  <span class="font-bold text-slate-800">Ý ${st.key}) ${formatHtmlText(st.text)}</span>
                   <span class="font-bold ${isStCorrect ? 'text-quiz-green' : 'text-quiz-red'}">
                     ${isStCorrect ? '✓ Đúng' : '✗ Sai'}
                   </span>
@@ -1527,7 +1547,7 @@
                   <span>Bạn chọn: <strong>${userVal === true ? 'Đúng' : userVal === false ? 'Sai' : 'Chưa'}</strong></span>
                   <span>Đáp án: <strong class="text-emerald-700">${st.isTrue ? 'Đúng' : 'Sai'}</strong></span>
                 </div>
-                <p class="text-[11px] text-slate-500 italic">• ${st.explanation}</p>
+                <p class="text-[11px] text-slate-500 italic">• ${formatHtmlText(st.explanation)}</p>
               </div>
             `;
           }).join('');
@@ -1535,7 +1555,7 @@
           return `
             <div class="p-4 rounded-2xl border ${isAllTfCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-amber-200 bg-amber-50/20'} space-y-2.5">
               <div class="flex items-center justify-between">
-                <span class="font-bold text-xs ${isAllTfCorrect ? 'text-emerald-700' : 'text-amber-700'}">${q.contextTitle}</span>
+                <span class="font-bold text-xs ${isAllTfCorrect ? 'text-emerald-700' : 'text-amber-700'}">${formatHtmlText(q.contextTitle)}</span>
                 <span class="text-[11px] text-slate-400">Bối cảnh ${idx - 9}/4</span>
               </div>
               <div class="space-y-2">

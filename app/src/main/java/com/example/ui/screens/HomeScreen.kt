@@ -224,7 +224,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = "Ôn tập Bài 7: HTML & Cấu trúc trang web",
+                            text = "Tin học 12 ÔN TẬP TRẮC NGHIỆM THEO BÀI HỌC",
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,

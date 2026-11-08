@@ -109,7 +109,7 @@
           </div>
 
           <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight">
-            Bài 7: HTML và Cấu Trúc Trang Web
+            Tin học 12 ÔN TẬP TRẮC NGHIỆM THEO BÀI HỌC
           </h2>
 
           <p class="text-white/80 text-sm leading-relaxed">
@@ -462,24 +462,26 @@
   <!-- ================= MODALS ================= -->
 
   <!-- Modal: Guest Join -->
-  <div id="modal-guest-join" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl">
-      <div class="flex justify-between items-start">
+  <div id="modal-guest-join" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-2 sm:p-4 flex items-center justify-center">
+    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full shadow-2xl flex flex-col max-h-[92dvh] sm:max-h-[90vh] my-auto overflow-hidden">
+      <!-- Fixed Header -->
+      <div class="px-5 py-3.5 sm:py-4 border-b border-slate-100 flex justify-between items-center flex-shrink-0 bg-slate-50/60">
         <div>
-          <h3 class="font-black text-lg text-quiz-darkPurple">QUIZ SMART – VÀO LÀM BÀI</h3>
-          <p id="guestModalQuizTitle" class="text-xs text-slate-500 font-medium">Bài 7: HTML và Cấu Trúc Trang Web</p>
+          <h3 class="font-black text-base sm:text-lg text-quiz-darkPurple">QUIZ SMART – VÀO LÀM BÀI</h3>
+          <p id="guestModalQuizTitle" class="text-xs text-slate-500 font-medium">Tin học 12 – Ôn tập trắc nghiệm</p>
         </div>
-        <button onclick="closeModal('modal-guest-join')" class="text-slate-400 hover:text-slate-600">
-          <i class="fa-solid fa-xmark text-lg"></i>
+        <button onclick="closeModal('modal-guest-join')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-base"></i>
         </button>
       </div>
 
-      <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center space-x-2 text-xs text-emerald-800 font-semibold">
-        <i class="fa-solid fa-circle-check text-emerald-600"></i>
-        <span>Chế độ Khách (Guest): Không cần tạo tài khoản hay mật khẩu!</span>
-      </div>
+      <!-- Scrollable Body -->
+      <div class="p-4 sm:p-5 space-y-3.5 overflow-y-auto flex-1 text-xs">
+        <div class="p-2.5 sm:p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center space-x-2 text-emerald-800 font-semibold">
+          <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
+          <span>Chế độ Khách (Guest): Không cần tạo tài khoản hay mật khẩu!</span>
+        </div>
 
-      <div class="space-y-3 text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Họ và tên học sinh *</label>
           <input type="text" id="guestNameInput" placeholder="Ví dụ: Nguyễn Mai Anh" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm">
@@ -498,44 +500,48 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1.5">Chọn chế độ làm bài:</label>
-          <div class="space-y-2">
-            <label class="flex items-center space-x-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
+          <label class="block font-bold text-slate-700 mb-1">Chọn chế độ làm bài:</label>
+          <div class="space-y-1.5 sm:space-y-2">
+            <label class="flex items-center space-x-2.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
               <input type="radio" name="practiceMode" value="INSTANT" checked class="text-quiz-purple focus:ring-quiz-purple">
               <div>
-                <p class="font-bold text-slate-800">Luyện tập từng câu</p>
+                <p class="font-bold text-slate-800 text-xs sm:text-sm">Luyện tập từng câu</p>
                 <p class="text-[11px] text-slate-500">Xem đúng/sai và lời giải chi tiết ngay sau mỗi câu</p>
               </div>
             </label>
-            <label class="flex items-center space-x-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
+            <label class="flex items-center space-x-2.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
               <input type="radio" name="practiceMode" value="EXAM" class="text-quiz-purple focus:ring-quiz-purple">
               <div>
-                <p class="font-bold text-slate-800">Kiểm tra tính điểm</p>
+                <p class="font-bold text-slate-800 text-xs sm:text-sm">Kiểm tra tính điểm</p>
                 <p class="text-[11px] text-slate-500">Làm toàn bộ bài, có thể quay lại sửa trước khi nộp</p>
               </div>
             </label>
-            <label class="flex items-center space-x-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
+            <label class="flex items-center space-x-2.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50">
               <input type="radio" name="practiceMode" value="CHALLENGE" class="text-quiz-purple focus:ring-quiz-purple">
               <div>
-                <p class="font-bold text-slate-800">Thử thách Quizizz</p>
+                <p class="font-bold text-slate-800 text-xs sm:text-sm">Thử thách Quizizz</p>
                 <p class="text-[11px] text-slate-500">Đồng hồ đếm ngược, chuỗi Streak combo điểm thưởng</p>
               </div>
             </label>
           </div>
         </div>
+
+        <div id="guestJoinError" class="hidden text-xs text-quiz-red font-semibold"></div>
       </div>
 
-      <div id="guestJoinError" class="hidden text-xs text-quiz-red font-semibold"></div>
-
-      <button onclick="startGuestQuiz()" class="w-full py-3 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-sm transition shadow-lg shadow-quiz-purple/20">
-        BẮT ĐẦU LÀM BÀI
-      </button>
+      <!-- Sticky Footer: Always visible on mobile screens -->
+      <div class="p-3 sm:p-4 bg-white border-t border-slate-100 flex-shrink-0">
+        <button onclick="startGuestQuiz()" class="w-full py-3 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-extrabold text-sm transition shadow-lg shadow-quiz-purple/30 flex items-center justify-center space-x-2 active:scale-[0.98]">
+          <i class="fa-solid fa-play text-xs"></i>
+          <span>BẮT ĐẦU LÀM BÀI</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Modal: PIN Code -->
-  <div id="modal-pin" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl text-center">
+  <div id="modal-pin" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-3 sm:p-4 flex items-center justify-center">
+    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-sm w-full p-5 sm:p-6 space-y-4 shadow-2xl text-center my-auto max-h-[92dvh] overflow-y-auto">
       <div class="w-12 h-12 rounded-2xl bg-amber-50 text-quiz-yellow mx-auto flex items-center justify-center text-xl">
         <i class="fa-solid fa-key"></i>
       </div>
@@ -554,8 +560,8 @@
   </div>
 
   <!-- Modal: Teacher Login -->
-  <div id="modal-teacher-login" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
+  <div id="modal-teacher-login" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-3 sm:p-4 flex items-center justify-center">
+    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-sm w-full p-5 sm:p-6 space-y-4 shadow-2xl my-auto max-h-[92dvh] overflow-y-auto">
       <div class="flex items-center space-x-2">
         <div class="w-8 h-8 rounded-lg bg-purple-100 text-quiz-purple flex items-center justify-center">
           <i class="fa-solid fa-user-shield"></i>
@@ -586,8 +592,8 @@
   </div>
 
   <!-- Modal: Question Navigator Sheet -->
-  <div id="modal-question-grid" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+  <div id="modal-question-grid" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-3 sm:p-4 flex items-center justify-center">
+    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl my-auto max-h-[92dvh] overflow-y-auto">
       <div class="flex justify-between items-center">
         <h3 class="font-black text-base text-quiz-darkPurple">Danh Sách Câu Hỏi</h3>
         <button onclick="closeModal('modal-question-grid')" class="text-slate-400 hover:text-slate-600">

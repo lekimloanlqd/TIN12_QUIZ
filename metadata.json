@@ -1,0 +1,6 @@
+{
+  "name": "Quiz Smart",
+  "description": "Ứng dụng ôn tập trắc nghiệm Tin học 12 – Bài 7: HTML và Cấu trúc trang web phong cách Quizizz.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

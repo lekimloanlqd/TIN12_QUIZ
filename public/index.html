@@ -358,8 +358,16 @@
           <h2 class="text-xl font-black text-quiz-darkPurple">BẢNG ĐIỀU KHIỂN GIÁO VIÊN</h2>
           <p class="text-xs text-slate-500">Quản lý kết quả học sinh (Guest & Account), thống kê và xuất điểm</p>
         </div>
-        <div class="flex items-center space-x-2">
-          <button onclick="exportCsvData()" class="px-4 py-2 rounded-xl bg-quiz-green hover:bg-emerald-600 text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="refreshCloudData()" class="px-3.5 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-quiz-purple font-bold text-xs flex items-center space-x-1.5 transition border border-purple-200">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>Tải Lại Cloud</span>
+          </button>
+          <button onclick="copyShareableCloudLink()" class="px-3.5 py-2 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
+            <i class="fa-solid fa-share-nodes"></i>
+            <span>Link Giao Bài Học Sinh</span>
+          </button>
+          <button onclick="exportCsvData()" class="px-3.5 py-2 rounded-xl bg-quiz-green hover:bg-emerald-600 text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
             <i class="fa-solid fa-file-excel"></i>
             <span>Xuất Excel / CSV</span>
           </button>
@@ -629,6 +637,25 @@
           </div>
         </div>
 
+        <!-- Shareable Cloud Link for Multi-Device Card -->
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-5 rounded-2xl shadow-sm space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 class="font-black text-sm flex items-center gap-2">
+                <i class="fa-solid fa-share-nodes text-emerald-200"></i>
+                <span>Link Giao Bài Học Sinh (Tự Động Kết Nối Cloud Đa Thiết Bị)</span>
+              </h4>
+              <p class="text-xs text-emerald-100 mt-0.5">
+                Gửi link này cho học sinh làm bài hoặc mở trên điện thoại/máy tính khác. Thiết bị mở link sẽ <strong>tự động kết nối Supabase Cloud</strong> và mọi bài làm nộp xong sẽ gửi thẳng về Bảng điều khiển của bạn!
+              </p>
+            </div>
+            <button onclick="copyShareableCloudLink()" class="px-4 py-2.5 rounded-xl bg-white text-emerald-900 font-black text-xs flex items-center gap-1.5 hover:bg-emerald-50 transition shadow-sm flex-shrink-0">
+              <i class="fa-solid fa-copy text-emerald-600"></i>
+              <span>Sao Chép Link Giao Bài</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Configuration Card -->
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
@@ -642,14 +669,18 @@
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-bold text-slate-700 mb-1">Project URL (Supabase API URL) *</label>
-              <input type="text" id="supabaseUrlInput" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-none focus:border-quiz-purple">
-              <p class="text-[11px] text-slate-400 mt-1">Lấy tại: Supabase Dashboard > Project Settings > API > Project URL</p>
+              <input type="text" id="supabaseUrlInput" placeholder="https://scwlgkhldtpdeowkcpzs.supabase.co" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-none focus:border-quiz-purple">
+              <p class="text-[11px] text-slate-500 mt-1">
+                📍 <strong>Định dạng đúng:</strong> <code class="text-emerald-700 font-bold bg-emerald-50 px-1 py-0.5 rounded">https://[mã-dự-án].supabase.co</code> (Trong Supabase vào <strong>Project Settings > API > Project URL</strong>, bấm biểu tượng <strong>Copy</strong> bên cạnh ô URL; <em>không copy link thanh địa chỉ trình duyệt</em>).
+              </p>
             </div>
 
             <div>
               <label class="block font-bold text-slate-700 mb-1">Project Anon Key (Public Key) *</label>
               <input type="password" id="supabaseKeyInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-none focus:border-quiz-purple">
-              <p class="text-[11px] text-slate-400 mt-1">Lấy tại: Supabase Dashboard > Project Settings > API > Project API keys (chọn <strong>anon public</strong>, không dùng service_role)</p>
+              <p class="text-[11px] text-slate-500 mt-1">
+                🔑 <strong>Khóa công khai:</strong> Lấy tại mục <strong>Project API keys</strong>, chọn dòng <strong>anon public</strong> (bấm nút Copy bên phải, không dùng service_role).
+              </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 pt-2">
@@ -1415,12 +1446,19 @@ INSERT INTO public.quiz_settings (id, title, subject, pin_code, duration_minutes
 VALUES ('bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', 'Tin học 12', '789123', 20, 26, true)
 ON CONFLICT (id) DO NOTHING;
 
--- 4. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
+-- 4. CẤP QUYỀN TRUY CẬP CHO VAI TRÒ ANON VÀ AUTHENTICATED (BẮT BUỘC ĐỂ TRÁNH LỖI PERMISSION DENIED)
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT ALL ON TABLE public.student_attempts TO anon, authenticated;
+GRANT ALL ON TABLE public.quiz_questions TO anon, authenticated;
+GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+
+-- 5. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.student_attempts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_settings ENABLE ROW LEVEL SECURITY;
 
--- 5. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
+-- 6. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
 DROP POLICY IF EXISTS "Cho phep doc ket qua lam bai" ON public.student_attempts;
 CREATE POLICY "Cho phep doc ket qua lam bai" ON public.student_attempts FOR SELECT USING (true);
 
@@ -1429,6 +1467,9 @@ CREATE POLICY "Cho phep them ket qua lam bai" ON public.student_attempts FOR INS
 
 DROP POLICY IF EXISTS "Cho phep quan ly xoa ket qua" ON public.student_attempts;
 CREATE POLICY "Cho phep quan ly xoa ket qua" ON public.student_attempts FOR DELETE USING (true);
+
+DROP POLICY IF EXISTS "Cho phep sua ket qua" ON public.student_attempts;
+CREATE POLICY "Cho phep sua ket qua" ON public.student_attempts FOR UPDATE USING (true);
 
 DROP POLICY IF EXISTS "Cho phep doc ngan hang cau hoi" ON public.quiz_questions;
 CREATE POLICY "Cho phep doc ngan hang cau hoi" ON public.quiz_questions FOR SELECT USING (true);
@@ -1442,13 +1483,30 @@ CREATE POLICY "Cho phep doc cai dat" ON public.quiz_settings FOR SELECT USING (t
 DROP POLICY IF EXISTS "Cho phep cap nhat cai dat" ON public.quiz_settings;
 CREATE POLICY "Cho phep cap nhat cai dat" ON public.quiz_settings FOR ALL USING (true);
 
--- 6. BẬT TÍNH NĂNG REALTIME WEBSOCKET
+-- 7. BẬT TÍNH NĂNG REALTIME WEBSOCKET
 DO $$
 BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.student_attempts;
 EXCEPTION WHEN OTHERS THEN
     NULL;
 END $$;`;
+
+    function cleanSupabaseUrl(rawUrl) {
+      if (!rawUrl) return '';
+      let u = rawUrl.trim();
+      // Auto-extract project ref if user pasted the dashboard address:
+      // e.g. https://supabase.com/dashboard/project/scwlgkhldtpdeowkcpzs/settings/api-keys
+      const match = u.match(/supabase\.com\/dashboard\/project\/([a-z0-9_-]+)/i);
+      if (match && match[1]) {
+        return `https://${match[1]}.supabase.co`;
+      }
+      // If user typed only the project ID
+      if (/^[a-z0-9_-]{15,35}$/i.test(u)) {
+        return `https://${u}.supabase.co`;
+      }
+      // Remove trailing slashes
+      return u.replace(/\/+$/, '');
+    }
 
     const DatabaseService = {
       client: null,
@@ -1458,9 +1516,32 @@ END $$;`;
       realtimeSubscription: null,
 
       async init() {
+        // 0. Auto-import from shared cloud link (#cloud=... or ?cloud=...)
+        try {
+          let encodedCfg = '';
+          if (window.location.hash && window.location.hash.includes('cloud=')) {
+            encodedCfg = window.location.hash.split('cloud=')[1].split('&')[0];
+          } else {
+            const urlParams = new URLSearchParams(window.location.search);
+            encodedCfg = urlParams.get('cloud') || '';
+          }
+          if (encodedCfg) {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(encodedCfg)))));
+            if (decoded.u && decoded.k) {
+              this.url = cleanSupabaseUrl(decoded.u);
+              this.anonKey = decoded.k.trim();
+              localStorage.setItem(SUPABASE_CONFIG_KEY, JSON.stringify({ url: this.url, anonKey: this.anonKey }));
+              history.replaceState(null, '', window.location.pathname + window.location.search.replace(/[?&]cloud=[^&]+/, ''));
+              console.log('[DatabaseService] Auto-imported Supabase credentials from shared link!');
+            }
+          }
+        } catch (e) {
+          console.warn('Cannot parse cloud config from link:', e);
+        }
+
         // 1. Try to read from build-time injected environment variables
         if (window.SUPABASE_ENV && window.SUPABASE_ENV.url && window.SUPABASE_ENV.anonKey) {
-          this.url = window.SUPABASE_ENV.url.trim();
+          this.url = cleanSupabaseUrl(window.SUPABASE_ENV.url);
           this.anonKey = window.SUPABASE_ENV.anonKey.trim();
         }
 
@@ -1471,7 +1552,7 @@ END $$;`;
             if (saved) {
               const parsed = JSON.parse(saved);
               if (parsed.url && parsed.anonKey) {
-                this.url = parsed.url.trim();
+                this.url = cleanSupabaseUrl(parsed.url);
                 this.anonKey = parsed.anonKey.trim();
               }
             }
@@ -1490,13 +1571,18 @@ END $$;`;
             if (res.ok) {
               const apiConfig = await res.json();
               if (apiConfig.supabaseUrl && apiConfig.supabaseAnonKey) {
-                this.url = apiConfig.supabaseUrl.trim();
+                this.url = cleanSupabaseUrl(apiConfig.supabaseUrl);
                 this.anonKey = apiConfig.supabaseAnonKey.trim();
               }
             }
           } catch (e) {
             // Silently continue
           }
+        }
+
+        // Default project URL if not set
+        if (!this.url) {
+          this.url = cleanSupabaseUrl('https://scwlgkhldtpdeowkcpzs.supabase.co');
         }
 
         // 4. Update the input fields in the Dashboard UI if present
@@ -1877,13 +1963,20 @@ END $$;`;
     }
 
     async function testAndSaveSupabaseConfig() {
-      const url = (document.getElementById('supabaseUrlInput')?.value || '').trim();
+      let rawUrl = (document.getElementById('supabaseUrlInput')?.value || '').trim();
       const key = (document.getElementById('supabaseKeyInput')?.value || '').trim();
       const resultDiv = document.getElementById('supabaseConnectionTestResult');
 
-      if (!url || !key) {
+      if (!rawUrl || !key) {
         alert('Vui lòng điền đầy đủ Supabase Project URL và Anon Key!');
         return;
+      }
+
+      // Tự động nhận diện và chuyển đổi nếu người dùng dán nhầm đường dẫn Dashboard
+      const url = cleanSupabaseUrl(rawUrl);
+      if (url !== rawUrl) {
+        const inputEl = document.getElementById('supabaseUrlInput');
+        if (inputEl) inputEl.value = url;
       }
 
       if (resultDiv) {
@@ -1894,6 +1987,10 @@ END $$;`;
       try {
         if (!window.supabase || typeof window.supabase.createClient !== 'function') {
           throw new Error('Thư viện Supabase SDK chưa tải được từ CDN. Vui lòng kiểm tra kết nối mạng.');
+        }
+
+        if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
+          throw new Error(`Định dạng URL không hợp lệ (${url}). Project URL chuẩn của Supabase phải có dạng https://[mã-dự-án].supabase.co`);
         }
 
         const testClient = window.supabase.createClient(url, key);
@@ -1917,14 +2014,40 @@ END $$;`;
 
         if (resultDiv) {
           resultDiv.className = 'p-3.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 block';
-          resultDiv.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> <strong>Kết nối thành công!</strong> Cấu hình đã được lưu. Dữ liệu học sinh từ nay sẽ được lưu trữ vĩnh viễn trên Supabase Cloud Database.';
+          resultDiv.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> <strong>Kết nối thành công!</strong> Cấu hình đã được lưu vĩnh viễn. Kết quả làm bài của học sinh từ nay sẽ được đồng bộ trực tiếp lên Supabase Cloud Database.';
         }
         showToast('Kết nối Supabase thành công & đã lưu cấu hình!');
       } catch (err) {
         console.error('Test connection error:', err);
         if (resultDiv) {
+          let errDetail = err.message || '';
+          let hintMsg = '';
+          if (errDetail.includes('permission denied for table') || errDetail.includes('permission denied')) {
+            hintMsg = `<div class="mt-2.5 text-slate-700 bg-white p-3.5 rounded-xl border border-red-200 space-y-2 text-xs text-left">
+              <strong class="text-red-700 font-bold block">💡 Cách sửa lỗi "permission denied for table":</strong>
+              <p>Bảng <code>student_attempts</code> trên Supabase chưa được cấp quyền truy cập cho vai trò <code>anon</code> (khách/học sinh).</p>
+              <p class="font-semibold text-slate-800">Thao tác sửa lỗi nhanh trong 30 giây:</p>
+              <ol class="list-decimal ml-4 space-y-1">
+                <li>Vào Supabase Dashboard: bấm vào menu <strong>SQL Editor</strong> ở thanh bên trái > chọn <strong>New query</strong>.</li>
+                <li>Dán 4 dòng lệnh sau vào và bấm <strong>RUN</strong>:</li>
+              </ol>
+              <div class="p-2.5 rounded bg-slate-900 text-emerald-400 font-mono text-[11px] leading-relaxed select-all">
+GRANT USAGE ON SCHEMA public TO anon, authenticated;<br>
+GRANT ALL ON TABLE public.student_attempts TO anon, authenticated;<br>
+GRANT ALL ON TABLE public.quiz_questions TO anon, authenticated;<br>
+GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
+              </div>
+              <p>3. Sau khi bấm RUN thành công trên Supabase, quay lại đây bấm nút <strong>Kiểm Tra Kết Nối & Lưu Cấu Hình</strong> là xong!</p>
+            </div>`;
+          } else if (errDetail.includes('Failed to fetch')) {
+            hintMsg = `<div class="mt-2.5 text-slate-700 bg-white p-3 rounded-xl border border-red-200 space-y-1 text-left">
+              <strong class="text-red-700 font-bold block">💡 Hướng dẫn sửa lỗi "Failed to fetch":</strong>
+              <p>1. <strong>Project URL chuẩn của bạn là:</strong> <code class="text-emerald-700 font-bold bg-emerald-50 px-1 py-0.5 rounded">https://scwlgkhldtpdeowkcpzs.supabase.co</code> (không copy link thanh địa chỉ <code>supabase.com/dashboard/...</code>).</p>
+              <p>2. <strong>Project Anon Key:</strong> Hãy chắc chắn bạn đã copy đúng chuỗi <strong>anon public</strong> (chuỗi mã JWT dài bắt đầu bằng <code>eyJ...</code>).</p>
+            </div>`;
+          }
           resultDiv.className = 'p-3.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200 block';
-          resultDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600"></i> <strong>Lỗi kết nối:</strong> ${err.message}`;
+          resultDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600"></i> <strong>Lỗi kết nối:</strong> ${errDetail}${hintMsg}`;
         }
       }
     }
@@ -1961,6 +2084,33 @@ END $$;`;
 
     function copySqlSchemaToClipboard() {
       copyToClipboard(SQL_SCHEMA_CONTENT, 'Đã sao chép toàn bộ mã SQL tạo bảng vào bộ nhớ tạm!');
+    }
+
+    function getShareableCloudLink() {
+      const url = DatabaseService.url || (document.getElementById('supabaseUrlInput')?.value || '').trim();
+      const key = DatabaseService.anonKey || (document.getElementById('supabaseKeyInput')?.value || '').trim();
+      if (!url || !key) {
+        alert('Vui lòng kiểm tra và lưu cấu hình Supabase trước khi tạo link chia sẻ!');
+        return null;
+      }
+      const payload = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({ u: url, k: key })))));
+      const base = window.location.origin + window.location.pathname;
+      return `${base}#cloud=${payload}`;
+    }
+
+    function copyShareableCloudLink() {
+      const link = getShareableCloudLink();
+      if (link) {
+        copyToClipboard(link, 'Đã sao chép Link giao bài tự động kết nối Cloud! Gửi link này cho học sinh làm bài.');
+      }
+    }
+
+    async function refreshCloudData() {
+      showToast('Đang tải dữ liệu mới nhất từ Supabase Cloud...');
+      const list = await DatabaseService.getAttempts(true);
+      await loadDashboardOverview();
+      await renderResultsTable();
+      showToast(`Đã làm mới xong ${list.length} kết quả từ Cloud!`);
     }
 
     // Current State
@@ -2377,7 +2527,7 @@ END $$;`;
     }
 
     // Submit Quiz & Grade
-    function submitQuiz() {
+    async function submitQuiz() {
       clearInterval(timerInterval);
       const now = Date.now();
       const durationSec = Math.max(1, Math.round((now - currentSession.startTime) / 1000));
@@ -2421,7 +2571,7 @@ END $$;`;
         sessionData: currentSession
       };
 
-      saveAttempt(attemptRecord);
+      await saveAttempt(attemptRecord);
       lastCompletedAttempt = attemptRecord;
 
       playSound('streak');

@@ -62,12 +62,19 @@ INSERT INTO public.quiz_settings (id, title, subject, pin_code, duration_minutes
 VALUES ('bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', 'Tin học 12', '789123', 20, 26, true)
 ON CONFLICT (id) DO NOTHING;
 
--- 4. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
+-- 4. CẤP QUYỀN TRUY CẬP CHO VAI TRÒ ANON VÀ AUTHENTICATED (BẮT BUỘC ĐỂ TRÁNH LỖI PERMISSION DENIED)
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT ALL ON TABLE public.student_attempts TO anon, authenticated;
+GRANT ALL ON TABLE public.quiz_questions TO anon, authenticated;
+GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+
+-- 5. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.student_attempts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_settings ENABLE ROW LEVEL SECURITY;
 
--- 5. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
+-- 6. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
 
 -- Học sinh và Giáo viên có thể đọc bảng điểm
 DROP POLICY IF EXISTS "Cho phep doc ket qua lam bai" ON public.student_attempts;
@@ -83,6 +90,11 @@ CREATE POLICY "Cho phep them ket qua lam bai" ON public.student_attempts
 DROP POLICY IF EXISTS "Cho phep quan ly xoa ket qua" ON public.student_attempts;
 CREATE POLICY "Cho phep quan ly xoa ket qua" ON public.student_attempts
     FOR DELETE USING (true);
+
+-- Cho phép cập nhật kết quả
+DROP POLICY IF EXISTS "Cho phep sua ket qua" ON public.student_attempts;
+CREATE POLICY "Cho phep sua ket qua" ON public.student_attempts
+    FOR UPDATE USING (true);
 
 -- Quyền đọc câu hỏi cho học sinh làm bài
 DROP POLICY IF EXISTS "Cho phep doc ngan hang cau hoi" ON public.quiz_questions;
@@ -103,7 +115,7 @@ DROP POLICY IF EXISTS "Cho phep cap nhat cai dat" ON public.quiz_settings;
 CREATE POLICY "Cho phep cap nhat cai dat" ON public.quiz_settings
     FOR ALL USING (true);
 
--- 6. BẬT TÍNH NĂNG REALTIME (ĐỂ GIÁO VIÊN NHẬN ĐIỂM HỌC SINH TỨC THÌ QUA WEBSOCKET)
+-- 7. BẬT TÍNH NĂNG REALTIME (ĐỂ GIÁO VIÊN NHẬN ĐIỂM HỌC SINH TỨC THÌ QUA WEBSOCKET)
 DO $$
 BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.student_attempts;

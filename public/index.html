@@ -13,6 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lexend:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Supabase Client SDK (PostgreSQL Cloud Database) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- __SUPABASE_ENV_SLOT__ -->
   <script>
     tailwind.config = {
       theme: {
@@ -139,6 +142,12 @@
       </div>
 
       <div class="flex items-center space-x-2">
+        <!-- Live Cloud DB Indicator -->
+        <div class="cloud-status-badge hidden sm:flex px-2.5 py-1 rounded-full text-[11px] font-bold items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200 cursor-pointer" onclick="openDatabaseConfigModal()" title="Bấm để kiểm tra hoặc cấu hình Supabase Cloud">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>Supabase Cloud</span>
+        </div>
+
         <button id="soundToggleBtn" onclick="toggleSound()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
           <i id="soundIcon" class="fa-solid fa-volume-high"></i>
         </button>
@@ -372,6 +381,9 @@
         <button onclick="switchDashboardTab('questions')" id="tabQuestionsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
           <i class="fa-solid fa-list-check mr-1"></i> Quản Lý & Soạn Thảo Câu Hỏi (HTML)
         </button>
+        <button onclick="switchDashboardTab('database')" id="tabDatabaseBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+          <i class="fa-solid fa-database mr-1 text-emerald-600"></i> Cơ Sở Dữ Liệu Supabase
+        </button>
         <button onclick="switchDashboardTab('settings')" id="tabSettingsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
           <i class="fa-solid fa-gear mr-1"></i> Cài Đặt Bài Tập & PIN
         </button>
@@ -566,6 +578,114 @@
         <!-- Questions List Container -->
         <div id="questionsManagerList" class="space-y-3">
           <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab: Supabase Cloud Database (PostgreSQL) -->
+      <div id="dashTab-database" class="hidden space-y-5">
+        <!-- Status Card -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-server text-emerald-600"></i>
+                <span>Cơ Sở Dữ Liệu Trực Tuyến Vĩnh Viễn (Supabase Cloud PostgreSQL)</span>
+              </h3>
+              <p class="text-xs text-slate-500">Dữ liệu lưu trữ độc lập trên cloud, không mất khi tắt máy, không mất khi Vercel redeploy, đồng bộ Realtime đa thiết bị</p>
+            </div>
+            <div class="cloud-status-badge px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span>Đang kiểm tra kết nối...</span>
+            </div>
+          </div>
+
+          <!-- Connection Stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-slate-500 font-medium block">Nền tảng Database:</span>
+              <span class="font-bold text-slate-800 text-sm flex items-center gap-1.5 mt-0.5">
+                <i class="fa-solid fa-database text-emerald-600"></i> Supabase PostgreSQL
+              </span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-slate-500 font-medium block">Đồng bộ Realtime:</span>
+              <span id="supabaseRealtimeStatus" class="font-bold text-emerald-700 text-sm flex items-center gap-1.5 mt-0.5">
+                <i class="fa-solid fa-bolt text-amber-500"></i> WebSocket Lắng Nghe Trực Tiếp
+              </span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-slate-500 font-medium block">Bộ đệm ngoại tuyến (Offline Mirror):</span>
+              <span class="font-bold text-quiz-darkPurple text-sm flex items-center gap-1.5 mt-0.5">
+                <i class="fa-solid fa-shield-halved text-quiz-purple"></i> An toàn, không mất dữ liệu
+              </span>
+            </div>
+          </div>
+
+          <div class="p-3 bg-purple-50/70 border border-purple-100 rounded-xl text-xs text-quiz-darkPurple flex items-start gap-2">
+            <i class="fa-solid fa-circle-info text-quiz-purple mt-0.5 flex-shrink-0"></i>
+            <div>
+              <strong>Cơ chế lưu trữ vĩnh viễn:</strong> Khi học sinh nộp bài hoặc giáo viên chỉnh sửa câu hỏi, dữ liệu sẽ được ghi trực tiếp vào cơ sở dữ liệu PostgreSQL trên Supabase. Ngay cả khi Vercel triển khai phiên bản mã nguồn mới, dữ liệu học sinh và ngân hàng đề thi vẫn được bảo toàn nguyên vẹn trên cloud.
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuration Card -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-key text-quiz-purple"></i>
+              <span>Cấu Hình Thông Tin Kết Nối Supabase Cloud</span>
+            </h4>
+            <span class="text-[11px] text-slate-500 font-medium">Bảo mật chuẩn Anon Key (Phù hợp Client Web)</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Project URL (Supabase API URL) *</label>
+              <input type="text" id="supabaseUrlInput" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-none focus:border-quiz-purple">
+              <p class="text-[11px] text-slate-400 mt-1">Lấy tại: Supabase Dashboard > Project Settings > API > Project URL</p>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Project Anon Key (Public Key) *</label>
+              <input type="password" id="supabaseKeyInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-none focus:border-quiz-purple">
+              <p class="text-[11px] text-slate-400 mt-1">Lấy tại: Supabase Dashboard > Project Settings > API > Project API keys (chọn <strong>anon public</strong>, không dùng service_role)</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 pt-2">
+              <button onclick="testAndSaveSupabaseConfig()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center gap-1.5 transition shadow-sm">
+                <i class="fa-solid fa-plug-circle-check"></i>
+                <span>Kiểm Tra Kết Nối & Lưu Cấu Hình</span>
+              </button>
+              <button onclick="syncAllLocalDataToSupabase()" class="px-4 py-2.5 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold flex items-center gap-1.5 transition shadow-sm">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Đẩy Toàn Bộ Dữ Liệu Máy Lên Cloud</span>
+              </button>
+              <button onclick="disconnectSupabaseConfig()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">
+                <span>Ngắt kết nối / Đặt lại</span>
+              </button>
+            </div>
+            <div id="supabaseConnectionTestResult" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+        </div>
+
+        <!-- SQL Script Viewer Card -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-code text-quiz-blue"></i>
+                <span>Mã SQL Tạo Bảng Cơ Sở Dữ Liệu (1-Click Copy)</span>
+              </h4>
+              <p class="text-xs text-slate-500">Mở Supabase SQL Editor > New query > Dán mã dưới đây và bấm RUN để tạo các bảng lưu vĩnh viễn</p>
+            </div>
+            <button onclick="copySqlSchemaToClipboard()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-copy"></i>
+              <span>Sao chép mã SQL</span>
+            </button>
+          </div>
+
+          <pre id="sqlSchemaPreBlock" class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-[11px] leading-relaxed max-h-64 overflow-y-auto overflow-x-auto"></pre>
         </div>
       </div>
     </div>
@@ -1228,66 +1348,619 @@
       }
     ];
 
-    // Local Storage Database Management
-    const STORAGE_KEY = 'quiz_smart_attempts_v1';
+    // ================= SUPABASE CLOUD POSTGRESQL & LOCAL MIRROR DATABASE =================
+    const SUPABASE_CONFIG_KEY = 'quizsmart_supabase_config_v1';
+    const ATTEMPTS_STORAGE_KEY = 'quiz_smart_attempts_v1';
+    const QUESTIONS_STORAGE_KEY = 'quizsmart_active_questions';
+
+    const SQL_SCHEMA_CONTENT = `-- ========================================================
+-- QUIZ SMART: SUPABASE POSTGRESQL DATABASE SCHEMA
+-- HỌC VUI, LUYỆN TẬP THÔNG MINH - TIN HỌC 12 (BÀI 7)
+-- ========================================================
+
+-- 1. BẢNG LƯU TRỮ KẾT QUẢ LÀM BÀI CỦA HỌC SINH (STUDENT ATTEMPTS)
+CREATE TABLE IF NOT EXISTS public.student_attempts (
+    id TEXT PRIMARY KEY,
+    student_name TEXT NOT NULL,
+    class_name TEXT NOT NULL,
+    participation_type TEXT DEFAULT 'GUEST',
+    score NUMERIC(4, 2) NOT NULL,
+    correct_count INTEGER NOT NULL,
+    total_points INTEGER NOT NULL,
+    accuracy_rate NUMERIC(5, 2) NOT NULL,
+    duration_seconds INTEGER NOT NULL,
+    submitted_at BIGINT NOT NULL,
+    practice_mode TEXT DEFAULT 'INSTANT',
+    session_data JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index tăng tốc tìm kiếm và sắp xếp kết quả
+CREATE INDEX IF NOT EXISTS idx_attempts_submitted_at ON public.student_attempts (submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_attempts_class_name ON public.student_attempts (class_name);
+CREATE INDEX IF NOT EXISTS idx_attempts_student_name ON public.student_attempts (student_name);
+
+-- 2. BẢNG LƯU TRỮ NGÂN HÀNG CÂU HỎI (QUIZ QUESTIONS)
+CREATE TABLE IF NOT EXISTS public.quiz_questions (
+    id BIGINT PRIMARY KEY,
+    part INTEGER DEFAULT 1,
+    type TEXT DEFAULT 'MCQ',
+    level TEXT,
+    prompt TEXT NOT NULL,
+    options JSONB,
+    correct_index INTEGER,
+    explanation TEXT,
+    statements JSONB,
+    context_title TEXT,
+    context_desc TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 3. BẢNG CÀI ĐẶT BÀI TẬP VÀ MÃ PIN (QUIZ SETTINGS)
+CREATE TABLE IF NOT EXISTS public.quiz_settings (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    pin_code TEXT NOT NULL,
+    duration_minutes INTEGER DEFAULT 20,
+    total_points INTEGER DEFAULT 26,
+    is_redo_allowed BOOLEAN DEFAULT TRUE,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Cài đặt mặc định cho Bài 7
+INSERT INTO public.quiz_settings (id, title, subject, pin_code, duration_minutes, total_points, is_redo_allowed)
+VALUES ('bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', 'Tin học 12', '789123', 20, 26, true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 4. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
+ALTER TABLE public.student_attempts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_settings ENABLE ROW LEVEL SECURITY;
+
+-- 5. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
+DROP POLICY IF EXISTS "Cho phep doc ket qua lam bai" ON public.student_attempts;
+CREATE POLICY "Cho phep doc ket qua lam bai" ON public.student_attempts FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Cho phep them ket qua lam bai" ON public.student_attempts;
+CREATE POLICY "Cho phep them ket qua lam bai" ON public.student_attempts FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Cho phep quan ly xoa ket qua" ON public.student_attempts;
+CREATE POLICY "Cho phep quan ly xoa ket qua" ON public.student_attempts FOR DELETE USING (true);
+
+DROP POLICY IF EXISTS "Cho phep doc ngan hang cau hoi" ON public.quiz_questions;
+CREATE POLICY "Cho phep doc ngan hang cau hoi" ON public.quiz_questions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Cho phep quan ly cau hoi" ON public.quiz_questions;
+CREATE POLICY "Cho phep quan ly cau hoi" ON public.quiz_questions FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Cho phep doc cai dat" ON public.quiz_settings;
+CREATE POLICY "Cho phep doc cai dat" ON public.quiz_settings FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Cho phep cap nhat cai dat" ON public.quiz_settings;
+CREATE POLICY "Cho phep cap nhat cai dat" ON public.quiz_settings FOR ALL USING (true);
+
+-- 6. BẬT TÍNH NĂNG REALTIME WEBSOCKET
+DO $$
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.student_attempts;
+EXCEPTION WHEN OTHERS THEN
+    NULL;
+END $$;`;
+
+    const DatabaseService = {
+      client: null,
+      isOnline: false,
+      url: '',
+      anonKey: '',
+      realtimeSubscription: null,
+
+      async init() {
+        // 1. Try to read from build-time injected environment variables
+        if (window.SUPABASE_ENV && window.SUPABASE_ENV.url && window.SUPABASE_ENV.anonKey) {
+          this.url = window.SUPABASE_ENV.url.trim();
+          this.anonKey = window.SUPABASE_ENV.anonKey.trim();
+        }
+
+        // 2. Fallback to localStorage saved by teacher
+        if (!this.url || !this.anonKey) {
+          try {
+            const saved = localStorage.getItem(SUPABASE_CONFIG_KEY);
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              if (parsed.url && parsed.anonKey) {
+                this.url = parsed.url.trim();
+                this.anonKey = parsed.anonKey.trim();
+              }
+            }
+          } catch (e) {
+            console.warn('Cannot read saved Supabase config:', e);
+          }
+        }
+
+        // 3. Fallback to /api/config serverless function if on Vercel
+        if (!this.url || !this.anonKey) {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const res = await fetch('/api/config', { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+              const apiConfig = await res.json();
+              if (apiConfig.supabaseUrl && apiConfig.supabaseAnonKey) {
+                this.url = apiConfig.supabaseUrl.trim();
+                this.anonKey = apiConfig.supabaseAnonKey.trim();
+              }
+            }
+          } catch (e) {
+            // Silently continue
+          }
+        }
+
+        // 4. Update the input fields in the Dashboard UI if present
+        const urlInput = document.getElementById('supabaseUrlInput');
+        const keyInput = document.getElementById('supabaseKeyInput');
+        if (urlInput && this.url) urlInput.value = this.url;
+        if (keyInput && this.anonKey) keyInput.value = this.anonKey;
+
+        // 5. Connect to Supabase PostgreSQL client if credentials are present
+        if (this.url && this.anonKey && window.supabase && typeof window.supabase.createClient === 'function') {
+          try {
+            this.client = window.supabase.createClient(this.url, this.anonKey);
+            const { data, error } = await this.client.from('student_attempts').select('id').limit(1);
+
+            if (!error) {
+              this.isOnline = true;
+              this.updateCloudStatusBadge(true, 'Supabase Cloud (Vĩnh viễn)');
+              this.setupRealtime();
+              await this.syncRemoteToLocal();
+              console.log('[DatabaseService] Connected to Supabase Cloud PostgreSQL successfully!');
+              return true;
+            } else {
+              console.warn('[DatabaseService] Query warning with Supabase:', error.message);
+              this.updateCloudStatusBadge(false, 'Lỗi kết nối Supabase: ' + error.message);
+            }
+          } catch (err) {
+            console.error('[DatabaseService] Failed to initialize Supabase client:', err);
+            this.updateCloudStatusBadge(false, 'Chưa kết nối Supabase Cloud');
+          }
+        } else {
+          this.updateCloudStatusBadge(false, 'Chưa cấu hình Supabase Cloud');
+        }
+        return false;
+      },
+
+      updateCloudStatusBadge(isOnline, message) {
+        this.isOnline = isOnline;
+        const badges = document.querySelectorAll('.cloud-status-badge');
+        badges.forEach(badge => {
+          if (isOnline) {
+            badge.className = 'cloud-status-badge px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-pointer shadow-sm';
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Supabase Cloud: Đã kết nối</span>`;
+            badge.title = 'Cơ sở dữ liệu Supabase PostgreSQL đang hoạt động - Lưu trữ vĩnh viễn';
+          } else {
+            badge.className = 'cloud-status-badge px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 bg-slate-100 text-slate-700 border border-slate-200 cursor-pointer';
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span><span>Bộ nhớ máy (Offline Mirror)</span>`;
+            badge.title = message || 'Đang lưu tại trình duyệt. Bấm để cấu hình kết nối Supabase Cloud';
+          }
+        });
+
+        const rtStatus = document.getElementById('supabaseRealtimeStatus');
+        if (rtStatus) {
+          if (isOnline) {
+            rtStatus.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> Đang hoạt động (Realtime WebSocket ON)';
+            rtStatus.className = 'font-bold text-emerald-700 text-sm flex items-center gap-1.5 mt-0.5';
+          } else {
+            rtStatus.innerHTML = '<i class="fa-solid fa-circle-pause text-slate-400"></i> Chưa kích hoạt (Lưu trữ nội bộ)';
+            rtStatus.className = 'font-bold text-slate-500 text-sm flex items-center gap-1.5 mt-0.5';
+          }
+        }
+      },
+
+      setupRealtime() {
+        if (!this.client || this.realtimeSubscription) return;
+        try {
+          this.realtimeSubscription = this.client
+            .channel('realtime-student-attempts')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'student_attempts' },
+              async (payload) => {
+                console.log('[DatabaseService] Realtime attempt update:', payload.eventType);
+                await this.getAttempts(true);
+                const dashScreen = document.getElementById('screen-dashboard');
+                if (dashScreen && !dashScreen.classList.contains('hidden')) {
+                  await loadDashboardOverview();
+                  await renderResultsTable();
+                  showToast('🔔 Có kết quả làm bài mới vừa đồng bộ từ học sinh!');
+                }
+              }
+            )
+            .subscribe((status) => {
+              console.log('[DatabaseService] Realtime subscription status:', status);
+            });
+        } catch (e) {
+          console.warn('[DatabaseService] Realtime setup error:', e);
+        }
+      },
+
+      async syncRemoteToLocal() {
+        if (!this.client || !this.isOnline) return;
+        try {
+          const { data: remoteAttempts, error: attErr } = await this.client
+            .from('student_attempts')
+            .select('*')
+            .order('submitted_at', { ascending: false })
+            .limit(200);
+
+          if (!attErr && Array.isArray(remoteAttempts) && remoteAttempts.length > 0) {
+            const localAttempts = this.getLocalAttempts();
+            const mergedMap = new Map();
+            remoteAttempts.forEach(row => {
+              mergedMap.set(row.id, {
+                attemptId: row.id,
+                quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+                studentName: row.student_name,
+                className: row.class_name,
+                participationType: row.participation_type || 'GUEST',
+                score: parseFloat(row.score),
+                correctCount: row.correct_count,
+                totalPoints: row.total_points,
+                accuracyRate: parseFloat(row.accuracy_rate),
+                durationSeconds: row.duration_seconds,
+                submittedAt: Number(row.submitted_at),
+                practiceMode: row.practice_mode || 'INSTANT',
+                sessionData: row.session_data || null
+              });
+            });
+            localAttempts.forEach(a => {
+              if (!mergedMap.has(a.attemptId)) {
+                mergedMap.set(a.attemptId, a);
+              }
+            });
+            const mergedList = Array.from(mergedMap.values()).sort((a, b) => b.submittedAt - a.submittedAt);
+            this.saveLocalAttempts(mergedList);
+          }
+
+          const { data: remoteQuestions, error: qErr } = await this.client
+            .from('quiz_questions')
+            .select('*')
+            .eq('is_active', true)
+            .order('id', { ascending: true });
+
+          if (!qErr && Array.isArray(remoteQuestions) && remoteQuestions.length > 0) {
+            const mappedQuestions = remoteQuestions.map(q => ({
+              id: Number(q.id),
+              part: q.part,
+              type: q.type,
+              level: q.level,
+              prompt: q.prompt,
+              options: q.options || [],
+              correctIndex: q.correct_index,
+              explanation: q.explanation,
+              statements: q.statements || [],
+              contextTitle: q.context_title,
+              contextDesc: q.context_desc
+            }));
+            localStorage.setItem(QUESTIONS_STORAGE_KEY, JSON.stringify(mappedQuestions));
+          }
+        } catch (e) {
+          console.warn('[DatabaseService] syncRemoteToLocal error:', e);
+        }
+      },
+
+      getLocalAttempts() {
+        try {
+          const raw = localStorage.getItem(ATTEMPTS_STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {
+          console.error('Error reading local attempts:', e);
+        }
+        const initial = [
+          {
+            attemptId: 'att-001',
+            quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+            studentName: 'Nguyễn Mai Anh',
+            className: '12/1B',
+            participationType: 'GUEST',
+            score: 9.2,
+            correctCount: 24,
+            totalPoints: 26,
+            accuracyRate: 92.3,
+            durationSeconds: 720,
+            submittedAt: Date.now() - 3600000 * 2
+          },
+          {
+            attemptId: 'att-002',
+            quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+            studentName: 'Trần Nam Phong',
+            className: '12/1B',
+            participationType: 'GUEST',
+            score: 8.5,
+            correctCount: 22,
+            totalPoints: 26,
+            accuracyRate: 84.6,
+            durationSeconds: 850,
+            submittedAt: Date.now() - 3600000 * 5
+          },
+          {
+            attemptId: 'att-003',
+            quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+            studentName: 'Lê Hoàng Lan',
+            className: '12A1',
+            participationType: 'ACCOUNT',
+            score: 10.0,
+            correctCount: 26,
+            totalPoints: 26,
+            accuracyRate: 100.0,
+            durationSeconds: 610,
+            submittedAt: Date.now() - 3600000 * 12
+          }
+        ];
+        this.saveLocalAttempts(initial);
+        return initial;
+      },
+
+      saveLocalAttempts(list) {
+        try {
+          localStorage.setItem(ATTEMPTS_STORAGE_KEY, JSON.stringify(list));
+        } catch (e) {
+          console.error('Error saving local attempts:', e);
+        }
+      },
+
+      async getAttempts(forceRemote = false) {
+        if (this.client && this.isOnline) {
+          try {
+            const { data, error } = await this.client
+              .from('student_attempts')
+              .select('*')
+              .order('submitted_at', { ascending: false });
+
+            if (!error && Array.isArray(data)) {
+              const list = data.map(row => ({
+                attemptId: row.id,
+                quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+                studentName: row.student_name,
+                className: row.class_name,
+                participationType: row.participation_type || 'GUEST',
+                score: parseFloat(row.score),
+                correctCount: row.correct_count,
+                totalPoints: row.total_points,
+                accuracyRate: parseFloat(row.accuracy_rate),
+                durationSeconds: row.duration_seconds,
+                submittedAt: Number(row.submitted_at),
+                practiceMode: row.practice_mode || 'INSTANT',
+                sessionData: row.session_data || null
+              }));
+              this.saveLocalAttempts(list);
+              return list;
+            }
+          } catch (err) {
+            console.warn('[DatabaseService] Failed to fetch remote attempts, using local mirror:', err);
+          }
+        }
+        return this.getLocalAttempts();
+      },
+
+      async saveAttempt(attempt) {
+        // 1. Save to local mirror immediately (guarantees zero data loss)
+        const list = this.getLocalAttempts();
+        list.unshift(attempt);
+        this.saveLocalAttempts(list);
+
+        // 2. Persist to Supabase Cloud PostgreSQL
+        if (this.client && this.isOnline) {
+          try {
+            const payload = {
+              id: attempt.attemptId,
+              student_name: attempt.studentName,
+              class_name: attempt.className,
+              participation_type: attempt.participationType || 'GUEST',
+              score: attempt.score,
+              correct_count: attempt.correctCount,
+              total_points: attempt.totalPoints,
+              accuracy_rate: attempt.accuracyRate,
+              duration_seconds: attempt.durationSeconds,
+              submitted_at: attempt.submittedAt,
+              practice_mode: attempt.practiceMode || 'INSTANT',
+              session_data: attempt.sessionData || null
+            };
+
+            const { error } = await this.client
+              .from('student_attempts')
+              .upsert(payload);
+
+            if (error) {
+              console.error('[DatabaseService] Supabase insert error:', error.message);
+              showToast('⚠️ Đã lưu cục bộ. Lỗi đồng bộ Cloud: ' + error.message);
+            } else {
+              console.log('[DatabaseService] Saved attempt permanently to Supabase Cloud!');
+              showToast('☁️ Đã lưu vĩnh viễn kết quả lên Supabase Cloud Database!');
+            }
+          } catch (e) {
+            console.error('[DatabaseService] Network error saving to Supabase:', e);
+          }
+        }
+      },
+
+      async deleteAttempt(attemptId) {
+        let list = this.getLocalAttempts().filter(a => a.attemptId !== attemptId);
+        this.saveLocalAttempts(list);
+
+        if (this.client && this.isOnline) {
+          try {
+            const { error } = await this.client
+              .from('student_attempts')
+              .delete()
+              .eq('id', attemptId);
+            if (error) console.error('[DatabaseService] Error deleting from Supabase:', error);
+          } catch (e) {
+            console.error('[DatabaseService] Error deleting:', e);
+          }
+        }
+      },
+
+      async syncAllLocalData() {
+        if (!this.client || !this.isOnline) {
+          return { success: false, message: 'Chưa kết nối Supabase Cloud. Vui lòng kiểm tra cấu hình URL và Anon Key.' };
+        }
+
+        try {
+          const localAttempts = this.getLocalAttempts();
+          const rows = localAttempts.map(a => ({
+            id: a.attemptId,
+            student_name: a.studentName,
+            class_name: a.className,
+            participation_type: a.participationType || 'GUEST',
+            score: a.score,
+            correct_count: a.correctCount,
+            total_points: a.totalPoints,
+            accuracy_rate: a.accuracyRate,
+            duration_seconds: a.durationSeconds,
+            submitted_at: a.submittedAt,
+            practice_mode: a.practiceMode || 'INSTANT',
+            session_data: a.sessionData || null
+          }));
+
+          if (rows.length > 0) {
+            const { error: attErr } = await this.client
+              .from('student_attempts')
+              .upsert(rows);
+            if (attErr) throw attErr;
+          }
+
+          const questions = getActiveQuestions();
+          const qRows = questions.map(q => ({
+            id: q.id,
+            part: q.part || 1,
+            type: q.type || 'MCQ',
+            level: q.level || '',
+            prompt: q.prompt,
+            options: q.options || [],
+            correct_index: q.correctIndex !== undefined ? q.correctIndex : null,
+            explanation: q.explanation || '',
+            statements: q.statements || [],
+            context_title: q.contextTitle || null,
+            context_desc: q.contextDesc || null,
+            is_active: true
+          }));
+
+          if (qRows.length > 0) {
+            const { error: qErr } = await this.client
+              .from('quiz_questions')
+              .upsert(qRows);
+            if (qErr) throw qErr;
+          }
+
+          return { success: true, count: rows.length, questionCount: qRows.length };
+        } catch (e) {
+          return { success: false, message: e.message || 'Lỗi khi đồng bộ dữ liệu.' };
+        }
+      }
+    };
 
     function getStoredAttempts() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) return JSON.parse(raw);
-      } catch (e) {
-        console.error('Error loading stored attempts', e);
-      }
-      // Initial mock data if empty
-      const initial = [
-        {
-          attemptId: 'att-001',
-          quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
-          studentName: 'Nguyễn Mai Anh',
-          className: '12/1B',
-          participationType: 'GUEST',
-          score: 9.2,
-          correctCount: 24,
-          totalPoints: 26,
-          accuracyRate: 92.3,
-          durationSeconds: 720,
-          submittedAt: Date.now() - 3600000 * 2
-        },
-        {
-          attemptId: 'att-002',
-          quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
-          studentName: 'Trần Nam Phong',
-          className: '12/1B',
-          participationType: 'GUEST',
-          score: 8.5,
-          correctCount: 22,
-          totalPoints: 26,
-          accuracyRate: 84.6,
-          durationSeconds: 850,
-          submittedAt: Date.now() - 3600000 * 5
-        },
-        {
-          attemptId: 'att-003',
-          quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
-          studentName: 'Lê Hoàng Lan',
-          className: '12A1',
-          participationType: 'ACCOUNT',
-          score: 10.0,
-          correctCount: 26,
-          totalPoints: 26,
-          accuracyRate: 100.0,
-          durationSeconds: 610,
-          submittedAt: Date.now() - 3600000 * 12
-        }
-      ];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
-      return initial;
+      return DatabaseService.getLocalAttempts();
     }
 
-    function saveAttempt(attempt) {
-      const list = getStoredAttempts();
-      list.unshift(attempt);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    async function saveAttempt(attempt) {
+      await DatabaseService.saveAttempt(attempt);
+    }
+
+    function openDatabaseConfigModal() {
+      navigateTo('dashboard');
+      switchDashboardTab('database');
+      showToast('Đã mở trang Quản lý Cơ Sở Dữ Liệu Cloud');
+    }
+
+    async function testAndSaveSupabaseConfig() {
+      const url = (document.getElementById('supabaseUrlInput')?.value || '').trim();
+      const key = (document.getElementById('supabaseKeyInput')?.value || '').trim();
+      const resultDiv = document.getElementById('supabaseConnectionTestResult');
+
+      if (!url || !key) {
+        alert('Vui lòng điền đầy đủ Supabase Project URL và Anon Key!');
+        return;
+      }
+
+      if (resultDiv) {
+        resultDiv.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 block';
+        resultDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang kiểm tra kết nối với Supabase PostgreSQL...';
+      }
+
+      try {
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+          throw new Error('Thư viện Supabase SDK chưa tải được từ CDN. Vui lòng kiểm tra kết nối mạng.');
+        }
+
+        const testClient = window.supabase.createClient(url, key);
+        const { data, error } = await testClient.from('student_attempts').select('id').limit(1);
+
+        if (error) {
+          if (error.code === '42P01' || error.message.includes('relation "public.student_attempts" does not exist')) {
+            throw new Error('Kết nối Supabase thành công nhưng chưa có bảng `student_attempts`. Vui lòng sao chép mã SQL ở mục bên dưới, dán vào Supabase SQL Editor và bấm RUN!');
+          }
+          throw error;
+        }
+
+        localStorage.setItem(SUPABASE_CONFIG_KEY, JSON.stringify({ url, anonKey: key }));
+        DatabaseService.url = url;
+        DatabaseService.anonKey = key;
+        DatabaseService.client = testClient;
+        DatabaseService.isOnline = true;
+        DatabaseService.updateCloudStatusBadge(true, 'Supabase Cloud (Vĩnh viễn)');
+        DatabaseService.setupRealtime();
+        await DatabaseService.syncRemoteToLocal();
+
+        if (resultDiv) {
+          resultDiv.className = 'p-3.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+          resultDiv.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> <strong>Kết nối thành công!</strong> Cấu hình đã được lưu. Dữ liệu học sinh từ nay sẽ được lưu trữ vĩnh viễn trên Supabase Cloud Database.';
+        }
+        showToast('Kết nối Supabase thành công & đã lưu cấu hình!');
+      } catch (err) {
+        console.error('Test connection error:', err);
+        if (resultDiv) {
+          resultDiv.className = 'p-3.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200 block';
+          resultDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600"></i> <strong>Lỗi kết nối:</strong> ${err.message}`;
+        }
+      }
+    }
+
+    function disconnectSupabaseConfig() {
+      if (confirm('Bạn có chắc muốn ngắt kết nối cấu hình Supabase trên trình duyệt này? Dữ liệu đã lưu trên Cloud sẽ không bị xóa.')) {
+        localStorage.removeItem(SUPABASE_CONFIG_KEY);
+        DatabaseService.client = null;
+        DatabaseService.isOnline = false;
+        DatabaseService.url = '';
+        DatabaseService.anonKey = '';
+        DatabaseService.updateCloudStatusBadge(false, 'Chưa kết nối Supabase Cloud');
+        const u = document.getElementById('supabaseUrlInput');
+        const k = document.getElementById('supabaseKeyInput');
+        if (u) u.value = '';
+        if (k) k.value = '';
+        const resultDiv = document.getElementById('supabaseConnectionTestResult');
+        if (resultDiv) resultDiv.className = 'hidden';
+        showToast('Đã xóa cấu hình Supabase trên máy');
+      }
+    }
+
+    async function syncAllLocalDataToSupabase() {
+      showToast('Đang đẩy dữ liệu lên Cloud...');
+      const res = await DatabaseService.syncAllLocalData();
+      if (res.success) {
+        showToast(`✅ Đã đồng bộ thành công ${res.count} kết quả làm bài & ${res.questionCount} câu hỏi lên Supabase!`);
+        await loadDashboardOverview();
+        await renderResultsTable();
+      } else {
+        alert('Không thể đồng bộ: ' + res.message);
+      }
+    }
+
+    function copySqlSchemaToClipboard() {
+      copyToClipboard(SQL_SCHEMA_CONTENT, 'Đã sao chép toàn bộ mã SQL tạo bảng vào bộ nhớ tạm!');
     }
 
     // Current State
@@ -1942,7 +2615,7 @@
     }
 
     function switchDashboardTab(tabName) {
-      ['overview', 'results', 'questions', 'settings'].forEach(t => {
+      ['overview', 'results', 'questions', 'database', 'settings'].forEach(t => {
         const el = document.getElementById(`dashTab-${t}`);
         const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
         if (el) el.classList.add('hidden');
@@ -1957,6 +2630,18 @@
       if (tabName === 'overview') loadDashboardOverview();
       if (tabName === 'results') renderResultsTable();
       if (tabName === 'questions') renderQuestionsManager();
+      if (tabName === 'database') {
+        const pre = document.getElementById('sqlSchemaPreBlock');
+        if (pre) pre.innerText = SQL_SCHEMA_CONTENT;
+        if (DatabaseService.url) {
+          const u = document.getElementById('supabaseUrlInput');
+          if (u) u.value = DatabaseService.url;
+        }
+        if (DatabaseService.anonKey) {
+          const k = document.getElementById('supabaseKeyInput');
+          if (k) k.value = DatabaseService.anonKey;
+        }
+      }
     }
 
     // ================= QUESTION MANAGEMENT & HTML WORKFLOW =================
@@ -2295,6 +2980,26 @@
       closeModal('modal-add-question');
       renderQuestionsManager();
       showToast('Đã lưu câu hỏi thành công (bảo toàn thẻ HTML)!');
+
+      // Also persist to Supabase Cloud if online
+      if (DatabaseService.client && DatabaseService.isOnline && typeof newQ !== 'undefined') {
+        const payload = {
+          id: newQ.id,
+          part: newQ.part || 1,
+          type: newQ.type || 'MCQ',
+          level: newQ.level || '',
+          prompt: newQ.prompt,
+          options: newQ.options || [],
+          correct_index: newQ.correctIndex !== undefined ? newQ.correctIndex : null,
+          explanation: newQ.explanation || '',
+          statements: newQ.statements || [],
+          is_active: true
+        };
+        DatabaseService.client.from('quiz_questions').upsert(payload).then(({ error }) => {
+          if (error) console.error('[DatabaseService] Error upserting question to Supabase:', error);
+          else console.log('[DatabaseService] Synced question to Supabase cloud!');
+        });
+      }
     }
 
     function editQuestionById(id) {
@@ -2312,6 +3017,13 @@
       saveActiveQuestions(questions);
       renderQuestionsManager();
       showToast('Đã xóa câu hỏi khỏi ngân hàng');
+
+      // Also delete from Supabase Cloud if online
+      if (DatabaseService.client && DatabaseService.isOnline) {
+        DatabaseService.client.from('quiz_questions').delete().eq('id', id).then(({ error }) => {
+          if (error) console.error('[DatabaseService] Error deleting question from Supabase:', error);
+        });
+      }
     }
 
     function loadHtmlBenchmarkTests() {
@@ -2364,8 +3076,8 @@
       event.target.value = '';
     }
 
-    function loadDashboardOverview() {
-      const attempts = getStoredAttempts();
+    async function loadDashboardOverview() {
+      const attempts = await DatabaseService.getAttempts();
       const studentNames = [...new Set(attempts.map(a => a.studentName))];
 
       document.getElementById('kpiTotalStudents').innerText = studentNames.length;
@@ -2418,8 +3130,8 @@
       `;
     }
 
-    function renderResultsTable() {
-      const attempts = getStoredAttempts();
+    async function renderResultsTable() {
+      const attempts = await DatabaseService.getAttempts();
       const q = (document.getElementById('teacherSearchInput')?.value || '').toLowerCase();
       const classFilter = document.getElementById('teacherClassSelect')?.value || 'ALL';
       const typeFilter = document.getElementById('teacherTypeSelect')?.value || 'ALL';
@@ -2460,18 +3172,17 @@
       }).join('') || '<tr><td colspan="9" class="p-6 text-center text-slate-400">Không tìm thấy kết quả nào phù hợp.</td></tr>';
     }
 
-    function deleteAttempt(id) {
-      if (confirm('Xóa kết quả lượt làm bài này?')) {
-        let list = getStoredAttempts().filter(a => a.attemptId !== id);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-        renderResultsTable();
-        loadDashboardOverview();
+    async function deleteAttempt(id) {
+      if (confirm('Xóa kết quả lượt làm bài này? Thao tác này sẽ xóa trên Cloud và trên máy.')) {
+        await DatabaseService.deleteAttempt(id);
+        await renderResultsTable();
+        await loadDashboardOverview();
         showToast('Đã xóa lượt làm bài');
       }
     }
 
     function exportCsvData() {
-      const attempts = getStoredAttempts();
+      const attempts = DatabaseService.getLocalAttempts();
       let csv = 'STT,Họ và tên,Lớp,Hình thức,Điểm số (/10),Số câu đúng,Tổng số câu,Tỷ lệ (%),Thời gian (giây),Ngày nộp\n';
       attempts.forEach((a, i) => {
         const d = new Date(a.submittedAt).toLocaleString('vi-VN');
@@ -2507,8 +3218,11 @@
     }
 
     // Initialize App
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       renderQuizList();
+      const pre = document.getElementById('sqlSchemaPreBlock');
+      if (pre) pre.innerText = SQL_SCHEMA_CONTENT;
+      await DatabaseService.init();
     });
   </script>
 

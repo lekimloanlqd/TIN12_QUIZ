@@ -176,23 +176,20 @@
             <span class="px-3 py-1 rounded-lg bg-quiz-yellow text-slate-900 font-bold text-xs uppercase tracking-wider">
               Tin học 12 • THPT
             </span>
-            <span class="px-3 py-1 rounded-lg bg-white/20 text-white font-semibold text-xs backdrop-blur-sm">
-              26 Ý Đánh Giá Chuẩn
-            </span>
           </div>
 
           <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight">
-            Tin học 12 ÔN TẬP TRẮC NGHIỆM THEO BÀI HỌC
+            ÔN TẬP TRẮC NGHIỆM THEO BÀI HỌC
           </h2>
 
           <p class="text-white/80 text-sm leading-relaxed">
-            Học sinh tham gia làm bài ngay ở chế độ Khách (Guest) không cần đăng nhập tài khoản. Có chấm điểm, xếp hạng và giải thích chi tiết từng câu từ tài liệu gốc.
+            Học sinh tham gia làm bài ngay không cần đăng nhập tài khoản. Có chấm điểm, xếp hạng và giải thích chi tiết từng câu từ tài liệu gốc.
           </p>
 
           <div class="pt-2 flex flex-wrap gap-3">
             <button onclick="openGuestJoinModal('bai-7-html')" class="px-6 py-3 rounded-xl bg-quiz-green hover:bg-emerald-500 text-white font-bold text-sm flex items-center space-x-2 transition shadow-lg shadow-quiz-green/30">
               <i class="fa-solid fa-play"></i>
-              <span>Vào Làm Bài Ngay (Khách)</span>
+              <span>Vào Làm Bài Ngay</span>
             </button>
             <button onclick="openPinModal()" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-sm flex items-center space-x-2 transition">
               <i class="fa-solid fa-key"></i>
@@ -869,20 +866,30 @@
         </div>
 
         <div>
+          <label class="block font-bold text-slate-700 mb-1">Chọn bài để làm *</label>
+          <select id="guestQuizSelect" onchange="onGuestQuizSelectChanged(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm bg-white font-bold text-quiz-darkPurple">
+            <option value="bai-7-html">Bài 7: HTML và Cấu Trúc Trang Web (Tin học 12)</option>
+            <option value="bai-8-dinh-dang">Bài 8: Định Dạng Văn Bản & Siêu Liên Kết (Tin học 12)</option>
+          </select>
+        </div>
+
+        <div>
           <label class="block font-bold text-slate-700 mb-1">Họ và tên học sinh *</label>
           <input type="text" id="guestNameInput" placeholder="Ví dụ: Nguyễn Mai Anh" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm">
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Lớp học *</label>
-          <select id="guestClassInput" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm bg-white">
-            <option value="12/1B">Lớp 12/1B</option>
-            <option value="12A1">Lớp 12A1</option>
-            <option value="12A2">Lớp 12A2</option>
-            <option value="12A3">Lớp 12A3</option>
-            <option value="12A4">Lớp 12A4</option>
-            <option value="12Tin">Lớp 12 Chuyên Tin</option>
-          </select>
+          <label class="block font-bold text-slate-700 mb-1">Lớp học (Học sinh tự điền) *</label>
+          <input type="text" id="guestClassInput" list="classListSuggestions" placeholder="Ví dụ: 12A1, 12/1B, 12Tin..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple text-sm bg-white">
+          <datalist id="classListSuggestions">
+            <option value="12/1B"></option>
+            <option value="12A1"></option>
+            <option value="12A2"></option>
+            <option value="12A3"></option>
+            <option value="12A4"></option>
+            <option value="12Tin"></option>
+          </datalist>
+          <p class="text-[11px] text-slate-400 mt-1">Học sinh tự điền tên lớp học của mình</p>
         </div>
 
         <div>
@@ -2176,10 +2183,22 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
     }
 
     function openGuestJoinModal(quizId) {
-      const quiz = sampleQuizzes.find(q => q.id === quizId) || sampleQuizzes[0];
+      const selectedId = quizId || 'bai-7-html';
+      const selectEl = document.getElementById('guestQuizSelect');
+      if (selectEl) {
+        selectEl.value = selectedId;
+      }
+      const quiz = sampleQuizzes.find(q => q.id === selectedId) || sampleQuizzes[0];
       document.getElementById('guestModalQuizTitle').innerText = quiz.title;
       document.getElementById('guestJoinError').classList.add('hidden');
       openModal('modal-guest-join');
+    }
+
+    function onGuestQuizSelectChanged(quizId) {
+      const quiz = sampleQuizzes.find(q => q.id === quizId) || sampleQuizzes[0];
+      if (quiz) {
+        document.getElementById('guestModalQuizTitle').innerText = quiz.title;
+      }
     }
 
     function openPinModal() {
@@ -2200,12 +2219,19 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
     // Start Quiz Session
     function startGuestQuiz() {
       const name = document.getElementById('guestNameInput').value.trim();
-      const className = document.getElementById('guestClassInput').value;
+      const className = document.getElementById('guestClassInput').value.trim();
       const mode = document.querySelector('input[name="practiceMode"]:checked').value;
+      const quizId = document.getElementById('guestQuizSelect')?.value || 'bai-7-html';
+      const selectedQuiz = sampleQuizzes.find(q => q.id === quizId) || sampleQuizzes[0];
 
+      const err = document.getElementById('guestJoinError');
       if (!name) {
-        const err = document.getElementById('guestJoinError');
         err.innerText = 'Vui lòng nhập Họ và tên để bắt đầu!';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (!className) {
+        err.innerText = 'Vui lòng tự điền Lớp học của bạn (Ví dụ: 12A1, 12/1B)!';
         err.classList.remove('hidden');
         return;
       }
@@ -2218,6 +2244,8 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
       }
 
       currentSession = {
+        quizId: selectedQuiz.id,
+        quizTitle: selectedQuiz.title,
         studentName: name,
         className: className,
         practiceMode: mode,
@@ -2227,7 +2255,7 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
         trueFalseAnswers: {},    // qId -> {a: true, b: false...}
         isAnswerChecked: false,
         streak: 0,
-        timeRemaining: 20 * 60,
+        timeRemaining: (selectedQuiz.durationMinutes || 20) * 60,
         startTime: Date.now()
       };
 
@@ -2558,7 +2586,7 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
 
       const attemptRecord = {
         attemptId: 'att-' + Date.now(),
-        quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+        quizTitle: currentSession.quizTitle || 'Bài 7: HTML và Cấu Trúc Trang Web',
         studentName: currentSession.studentName,
         className: currentSession.className,
         participationType: 'GUEST',

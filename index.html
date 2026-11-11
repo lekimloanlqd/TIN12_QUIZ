@@ -356,6 +356,10 @@
           <p class="text-xs text-slate-500">Quản lý kết quả học sinh (Guest & Account), thống kê và xuất điểm</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
+          <button onclick="openCreateRoomModal()" class="px-3.5 py-2 rounded-xl bg-quiz-darkPurple hover:bg-quiz-purple text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Tạo Phòng Theo Lớp</span>
+          </button>
           <button onclick="refreshCloudData()" class="px-3.5 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-quiz-purple font-bold text-xs flex items-center space-x-1.5 transition border border-purple-200">
             <i class="fa-solid fa-arrows-rotate"></i>
             <span>Tải Lại Cloud</span>
@@ -376,20 +380,23 @@
       </div>
 
       <!-- Dashboard Tabs -->
-      <div class="flex border-b border-slate-200 space-x-6 text-sm font-bold">
-        <button onclick="switchDashboardTab('overview')" id="tabOverviewBtn" class="pb-3 text-quiz-purple border-b-2 border-quiz-purple transition">
+      <div class="flex border-b border-slate-200 space-x-6 text-sm font-bold overflow-x-auto">
+        <button onclick="switchDashboardTab('overview')" id="tabOverviewBtn" class="pb-3 text-quiz-purple border-b-2 border-quiz-purple transition whitespace-nowrap">
           <i class="fa-solid fa-chart-pie mr-1"></i> Tổng Quan
         </button>
-        <button onclick="switchDashboardTab('results')" id="tabResultsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+        <button onclick="switchDashboardTab('rooms')" id="tabRoomsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition whitespace-nowrap">
+          <i class="fa-solid fa-chalkboard-user mr-1 text-quiz-purple"></i> Phòng & Điểm Theo Lớp
+        </button>
+        <button onclick="switchDashboardTab('results')" id="tabResultsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition whitespace-nowrap">
           <i class="fa-solid fa-table-list mr-1"></i> Bảng Điểm Học Sinh
         </button>
-        <button onclick="switchDashboardTab('questions')" id="tabQuestionsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+        <button onclick="switchDashboardTab('questions')" id="tabQuestionsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition whitespace-nowrap">
           <i class="fa-solid fa-list-check mr-1"></i> Quản Lý & Soạn Thảo Câu Hỏi (HTML)
         </button>
-        <button onclick="switchDashboardTab('database')" id="tabDatabaseBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+        <button onclick="switchDashboardTab('database')" id="tabDatabaseBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition whitespace-nowrap">
           <i class="fa-solid fa-database mr-1 text-emerald-600"></i> Cơ Sở Dữ Liệu Supabase
         </button>
-        <button onclick="switchDashboardTab('settings')" id="tabSettingsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">
+        <button onclick="switchDashboardTab('settings')" id="tabSettingsBtn" class="pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition whitespace-nowrap">
           <i class="fa-solid fa-gear mr-1"></i> Cài Đặt Bài Tập & PIN
         </button>
       </div>
@@ -441,6 +448,164 @@
             <h3 class="font-bold text-sm text-slate-900">Hình Thức Tham Gia</h3>
             <div id="typeDistBars" class="space-y-2.5 text-xs">
               <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Rooms & Class Reports -->
+      <div id="dashTab-rooms" class="hidden space-y-5">
+        <!-- Main Rooms Container -->
+        <div id="roomsMainContainer" class="space-y-5">
+          <!-- Rooms Hero Header -->
+          <div class="bg-gradient-to-r from-purple-950 via-indigo-900 to-slate-900 text-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-purple-200 border border-white/20 mb-2">
+                  <i class="fa-solid fa-chalkboard-user text-quiz-yellow"></i>
+                  <span>Phòng Theo Dõi Điểm Riêng Từng Lớp</span>
+                </span>
+                <h3 class="text-xl sm:text-2xl font-black tracking-tight text-white">Quản Lý Phòng Học & Báo Cáo Điểm Theo Lớp</h3>
+                <p class="text-xs text-purple-200/90 max-w-2xl mt-1 leading-relaxed">
+                  Mỗi lớp có <strong>đường link riêng</strong> và <strong>mã số PIN riêng</strong> để gửi cho học sinh. Khi học sinh bấm vào link, hệ thống <strong>tự động kết nối Supabase Cloud</strong> và lưu điểm vĩnh viễn vào lớp học tương ứng.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button onclick="openCreateRoomModal()" class="px-4 py-2.5 rounded-xl bg-quiz-yellow hover:bg-amber-400 text-slate-900 font-extrabold text-xs flex items-center space-x-2 transition shadow-md">
+                  <i class="fa-solid fa-plus text-sm"></i>
+                  <span>Tạo Phòng Lớp Mới</span>
+                </button>
+                <button onclick="refreshCloudData()" class="px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs flex items-center space-x-1.5 transition border border-white/20">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  <span>Tải lại Cloud</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Cloud Guarantee Callout -->
+            <div class="p-3.5 bg-emerald-500/20 rounded-xl border border-emerald-400/30 flex items-start sm:items-center space-x-2.5 text-xs text-emerald-100">
+              <i class="fa-solid fa-cloud-bolt text-emerald-300 text-base mt-0.5 sm:mt-0 flex-shrink-0"></i>
+              <div>
+                <strong class="text-white">Cam kết kết nối Supabase Cloud:</strong>
+                <span> Mọi link phòng giao bài do giáo viên chia sẻ đều tự động kích hoạt trạng thái </span>
+                <code class="bg-emerald-950/80 px-2 py-0.5 rounded text-emerald-300 font-bold border border-emerald-500/30">Supabase Cloud: Đã kết nối</code>
+                <span> trên máy học sinh, không cần cài đặt lại tài khoản hay cấu hình!</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Room Cards List -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-black text-slate-900 text-base flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-quiz-purple"></i>
+                <span>Danh Sách Phòng Đang Mở Theo Lớp</span>
+              </h4>
+              <span id="roomsCountBadge" class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Đang tải...</span>
+            </div>
+
+            <div id="roomsGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Rendered via renderRoomsDashboard() -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Class Room Live Report View (Shown when clicking 'Xem Báo Cáo Điểm Lớp') -->
+        <div id="roomClassReportView" class="hidden space-y-5">
+          <!-- Back Button & Report Header -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-3">
+                <button onclick="closeClassRoomReport()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="Quay lại danh sách phòng">
+                  <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span id="reportClassBadge" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-quiz-purple text-white">LỚP 12A1</span>
+                    <span id="reportRoomPinBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">Mã PIN: 121001</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>Supabase Cloud: Đã kết nối</span>
+                    </span>
+                  </div>
+                  <h3 id="reportRoomTitle" class="text-lg font-black text-slate-900 mt-1">Phòng Ôn Tập Bài 7 HTML - Lớp 12A1</h3>
+                  <p id="reportRoomQuizName" class="text-xs text-slate-500">Bài làm: Bài 7: HTML và Cấu Trúc Trang Web</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button id="btnCopyReportLink" onclick="copyCurrentReportRoomLink()" class="px-3.5 py-2 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
+                  <i class="fa-solid fa-share-nodes"></i>
+                  <span>Copy Link Lớp Này</span>
+                </button>
+                <button id="btnExportReportCsv" onclick="exportCurrentReportRoomCsv()" class="px-3.5 py-2 rounded-xl bg-quiz-green hover:bg-emerald-600 text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-sm">
+                  <i class="fa-solid fa-file-excel"></i>
+                  <span>Xuất Excel Điểm Lớp</span>
+                </button>
+                <button onclick="refreshCloudData()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center space-x-1 transition">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  <span>Làm mới</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Class KPI Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="p-4 rounded-xl bg-purple-50/60 border border-purple-100">
+                <span class="text-xs text-slate-500 font-semibold block">Sĩ số đã nộp bài</span>
+                <p id="classKpiTotal" class="text-2xl font-black text-quiz-darkPurple mt-1">0</p>
+              </div>
+              <div class="p-4 rounded-xl bg-amber-50/60 border border-amber-100">
+                <span class="text-xs text-slate-500 font-semibold block">Điểm trung bình lớp</span>
+                <p id="classKpiAvgScore" class="text-2xl font-black text-amber-700 mt-1">0.0</p>
+              </div>
+              <div class="p-4 rounded-xl bg-emerald-50/60 border border-emerald-100">
+                <span class="text-xs text-slate-500 font-semibold block">Tỷ lệ đúng TB</span>
+                <p id="classKpiAvgAcc" class="text-2xl font-black text-emerald-700 mt-1">0%</p>
+              </div>
+              <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-100">
+                <span class="text-xs text-slate-500 font-semibold block">Cao nhất / Thấp nhất</span>
+                <p id="classKpiHighLow" class="text-2xl font-black text-quiz-blue mt-1">0 / 0</p>
+              </div>
+            </div>
+
+            <!-- Grade classification progress -->
+            <div class="space-y-2 pt-1">
+              <span class="text-xs font-bold text-slate-700 block">Phân loại học lực lớp:</span>
+              <div id="classRankBars" class="space-y-1.5 text-xs">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Class Results Table -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="relative w-full sm:w-72">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                <input type="text" id="reportClassSearchInput" oninput="renderClassReportTable()" placeholder="Tìm học sinh trong lớp..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+              </div>
+              <p class="text-xs text-slate-400 font-medium">Bảng điểm tự động cập nhật Realtime từ Supabase Cloud</p>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 border-b border-slate-100 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th class="p-3.5">STT</th>
+                    <th class="p-3.5">Học Sinh</th>
+                    <th class="p-3.5">Lớp</th>
+                    <th class="p-3.5">Chế Độ</th>
+                    <th class="p-3.5">Điểm (/10)</th>
+                    <th class="p-3.5">Số Câu Đúng</th>
+                    <th class="p-3.5">Thời Gian</th>
+                    <th class="p-3.5">Ngày Nộp</th>
+                    <th class="p-3.5 text-center">Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody id="classReportTableBody" class="divide-y divide-slate-100">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -860,6 +1025,22 @@
 
       <!-- Scrollable Body -->
       <div class="p-4 sm:p-5 space-y-3.5 overflow-y-auto flex-1 text-xs">
+        <!-- Room Banner Slot (Shown when student joins via room link or PIN) -->
+        <div id="guestRoomInfoBanner" class="hidden p-3 bg-gradient-to-r from-purple-50 via-indigo-50 to-emerald-50 rounded-xl border border-purple-200/80 space-y-1.5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="font-black text-quiz-darkPurple text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-chalkboard-user text-quiz-purple"></i>
+              <span id="guestRoomBannerTitle">Phòng Học Lớp 12A1</span>
+            </span>
+            <span id="guestRoomBannerCode" class="px-2 py-0.5 rounded-full bg-quiz-purple text-white text-[10px] font-black tracking-wider">MÃ: 121001</span>
+          </div>
+          <p id="guestRoomBannerDesc" class="text-[11px] text-purple-800 font-medium leading-tight">Lớp học và bài tập đã được giáo viên đồng bộ tự động.</p>
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-white/80 p-1.5 rounded-lg border border-emerald-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Supabase Cloud: Đã kết nối (Bài làm sẽ được lưu vĩnh viễn)</span>
+          </div>
+        </div>
+
         <div class="p-2.5 sm:p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center space-x-2 text-emerald-800 font-semibold">
           <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
           <span>Chế độ Khách (Guest): Không cần tạo tài khoản hay mật khẩu!</span>
@@ -932,6 +1113,88 @@
     </div>
   </div>
 
+  <!-- Modal: Create Room for Class -->
+  <div id="modal-create-room" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-2 sm:p-4 flex items-center justify-center">
+    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full shadow-2xl flex flex-col max-h-[92dvh] my-auto overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/70">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-purple-100 text-quiz-purple flex items-center justify-center text-base">
+            <i class="fa-solid fa-chalkboard-user"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-base sm:text-lg text-slate-900">Tạo Phòng Theo Dõi Điểm Riêng Cho Lớp</h3>
+            <p class="text-xs text-slate-500">Mỗi phòng có link riêng và mã PIN riêng để gửi cho học sinh</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-create-room')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tên Lớp Học *</label>
+          <input type="text" id="newRoomClassName" list="classListSuggestions" placeholder="Ví dụ: 12A1, 12/1B, 12A2, 12Tin..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+          <p class="text-[11px] text-slate-400 mt-1">Học sinh thuộc lớp này khi mở link sẽ được tự động điền sẵn lớp học</p>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tên Phòng / Buổi Kiểm Tra *</label>
+          <input type="text" id="newRoomName" placeholder="Ví dụ: Kiểm tra 15 phút Bài 7 HTML - Lớp 12A1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Chọn Bài Trắc Nghiệm *</label>
+          <select id="newRoomQuizSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+            <option value="bai-7-html">Bài 7: HTML và Cấu Trúc Trang Web (Tin học 12)</option>
+            <option value="bai-8-dinh-dang">Bài 8: Định Dạng Văn Bản & Siêu Liên Kết (Tin học 12)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mã Số Phòng (PIN 6 số) *</label>
+            <div class="flex gap-1.5">
+              <input type="text" id="newRoomCode" maxlength="6" placeholder="121001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono font-black text-center text-base focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+              <button type="button" onclick="generateRandomRoomCode()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs" title="Sinh mã ngẫu nhiên">
+                <i class="fa-solid fa-dice"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Thời Gian Làm Bài (phút)</label>
+            <input type="number" id="newRoomDuration" value="20" min="5" max="90" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Lời Dặn / Ghi Chú Cho Học Sinh</label>
+          <textarea id="newRoomNotes" rows="2" placeholder="Ví dụ: Ôn tập trắc nghiệm có tính điểm, học sinh làm bài nghiêm túc..." class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-quiz-purple"></textarea>
+        </div>
+
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-800 text-[11px] font-semibold space-y-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Tự động nhúng cấu hình Supabase Cloud vào link phòng</span>
+          </div>
+          <p class="text-slate-600">Học sinh khi click link phòng sẽ ngay lập tức ở trạng thái "Supabase Cloud: Đã kết nối", kết quả được lưu vĩnh viễn.</p>
+        </div>
+
+        <div id="newRoomError" class="hidden text-xs text-quiz-red font-bold"></div>
+      </div>
+
+      <div class="px-5 py-3.5 border-t border-slate-100 bg-slate-50 flex items-center justify-end gap-2">
+        <button onclick="closeModal('modal-create-room')" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition">
+          Hủy bỏ
+        </button>
+        <button onclick="saveRoomFromModal()" class="px-5 py-2.5 rounded-xl bg-quiz-darkPurple hover:bg-quiz-purple text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-check"></i>
+          <span>Tạo Phòng & Lấy Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: PIN Code -->
   <div id="modal-pin" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-3 sm:p-4 flex items-center justify-center">
     <div class="bg-white rounded-2xl sm:rounded-3xl max-w-sm w-full p-5 sm:p-6 space-y-4 shadow-2xl text-center my-auto max-h-[92dvh] overflow-y-auto">
@@ -939,11 +1202,11 @@
         <i class="fa-solid fa-key"></i>
       </div>
       <h3 class="font-black text-lg text-slate-900">Tham Gia Bằng Mã PIN</h3>
-      <p class="text-xs text-slate-500">Nhập mã PIN 6 chữ số do giáo viên chia sẻ</p>
+      <p class="text-xs text-slate-500">Nhập mã PIN phòng hoặc mã bài do giáo viên chia sẻ</p>
 
-      <input type="text" id="pinCodeInput" maxlength="6" placeholder="Ví dụ: 789123" class="w-full text-center text-2xl font-black tracking-widest px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple">
+      <input type="text" id="pinCodeInput" maxlength="6" placeholder="Ví dụ: 121001 hoặc 789123" class="w-full text-center text-2xl font-black tracking-widest px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-quiz-purple">
 
-      <p class="text-[11px] text-slate-400">Gợi ý: Mã PIN bài 7 là <strong>789123</strong></p>
+      <p class="text-[11px] text-slate-400">Gợi ý: Mã phòng Lớp 12A1: <strong>121001</strong>, Lớp 12/1B: <strong>121002</strong></p>
 
       <div class="flex gap-2">
         <button onclick="closeModal('modal-pin')" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs">Hủy</button>
@@ -1390,17 +1653,61 @@
     const SUPABASE_CONFIG_KEY = 'quizsmart_supabase_config_v1';
     const ATTEMPTS_STORAGE_KEY = 'quiz_smart_attempts_v1';
     const QUESTIONS_STORAGE_KEY = 'quizsmart_active_questions';
+    const ROOMS_STORAGE_KEY = 'quizsmart_rooms_v2';
+
+    const DEFAULT_ROOMS = [
+      {
+        id: 'room-12a1',
+        name: 'Phòng Ôn Tập Bài 7 HTML - Lớp 12A1',
+        className: '12A1',
+        quizId: 'bai-7-html',
+        quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+        roomCode: '121001',
+        durationMinutes: 20,
+        notes: 'Ôn tập trắc nghiệm Bài 7 có chấm điểm hệ số 1. Nộp bài trước 21h00.',
+        isActive: true,
+        createdAt: Date.now() - 3600000 * 24
+      },
+      {
+        id: 'room-12-1b',
+        name: 'Phòng Kiểm Tra 15 Phút - Lớp 12/1B',
+        className: '12/1B',
+        quizId: 'bai-7-html',
+        quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+        roomCode: '121002',
+        durationMinutes: 20,
+        notes: 'Lớp 12/1B vào làm bài nghiêm túc, điểm lưu vĩnh viễn trên Supabase Cloud.',
+        isActive: true,
+        createdAt: Date.now() - 3600000 * 12
+      },
+      {
+        id: 'room-12a2',
+        name: 'Phòng Luyện Thi Trắc Nghiệm - Lớp 12A2',
+        className: '12A2',
+        quizId: 'bai-7-html',
+        quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
+        roomCode: '121003',
+        durationMinutes: 20,
+        notes: 'Luyện tập kỹ năng đọc và nhận biết thẻ HTML cấu trúc trang web.',
+        isActive: true,
+        createdAt: Date.now() - 3600000 * 4
+      }
+    ];
 
     const SQL_SCHEMA_CONTENT = `-- ========================================================
 -- QUIZ SMART: SUPABASE POSTGRESQL DATABASE SCHEMA
 -- HỌC VUI, LUYỆN TẬP THÔNG MINH - TIN HỌC 12 (BÀI 7)
 -- ========================================================
+-- Chạy toàn bộ mã script này trong mục SQL Editor của Supabase
+-- để tạo các bảng lưu trữ vĩnh viễn, bảo mật RLS và Realtime.
 
 -- 1. BẢNG LƯU TRỮ KẾT QUẢ LÀM BÀI CỦA HỌC SINH (STUDENT ATTEMPTS)
 CREATE TABLE IF NOT EXISTS public.student_attempts (
     id TEXT PRIMARY KEY,
     student_name TEXT NOT NULL,
     class_name TEXT NOT NULL,
+    room_id TEXT,
+    room_code TEXT,
     participation_type TEXT DEFAULT 'GUEST',
     score NUMERIC(4, 2) NOT NULL,
     correct_count INTEGER NOT NULL,
@@ -1413,12 +1720,35 @@ CREATE TABLE IF NOT EXISTS public.student_attempts (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Tự động thêm cột phòng nếu bảng đã tạo trước đó
+ALTER TABLE public.student_attempts ADD COLUMN IF NOT EXISTS room_id TEXT;
+ALTER TABLE public.student_attempts ADD COLUMN IF NOT EXISTS room_code TEXT;
+
 -- Index tăng tốc tìm kiếm và sắp xếp kết quả
 CREATE INDEX IF NOT EXISTS idx_attempts_submitted_at ON public.student_attempts (submitted_at DESC);
 CREATE INDEX IF NOT EXISTS idx_attempts_class_name ON public.student_attempts (class_name);
 CREATE INDEX IF NOT EXISTS idx_attempts_student_name ON public.student_attempts (student_name);
+CREATE INDEX IF NOT EXISTS idx_attempts_room_code ON public.student_attempts (room_code);
 
--- 2. BẢNG LƯU TRỮ NGÂN HÀNG CÂU HỎI (QUIZ QUESTIONS)
+-- 2. BẢNG QUẢN LÝ PHÒNG HỌC & BÁO CÁO THEO LỚP (QUIZ ROOMS)
+CREATE TABLE IF NOT EXISTS public.quiz_rooms (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    class_name TEXT NOT NULL,
+    quiz_id TEXT NOT NULL,
+    quiz_title TEXT NOT NULL,
+    room_code TEXT NOT NULL UNIQUE,
+    duration_minutes INTEGER DEFAULT 20,
+    notes TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_rooms_class_name ON public.quiz_rooms (class_name);
+CREATE INDEX IF NOT EXISTS idx_rooms_code ON public.quiz_rooms (room_code);
+
+-- 3. BẢNG LƯU TRỮ NGÂN HÀNG CÂU HỎI (QUIZ QUESTIONS)
 CREATE TABLE IF NOT EXISTS public.quiz_questions (
     id BIGINT PRIMARY KEY,
     part INTEGER DEFAULT 1,
@@ -1436,7 +1766,7 @@ CREATE TABLE IF NOT EXISTS public.quiz_questions (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. BẢNG CÀI ĐẶT BÀI TẬP VÀ MÃ PIN (QUIZ SETTINGS)
+-- 4. BẢNG CÀI ĐẶT BÀI TẬP VÀ MÃ PIN (QUIZ SETTINGS)
 CREATE TABLE IF NOT EXISTS public.quiz_settings (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
@@ -1453,50 +1783,120 @@ INSERT INTO public.quiz_settings (id, title, subject, pin_code, duration_minutes
 VALUES ('bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', 'Tin học 12', '789123', 20, 26, true)
 ON CONFLICT (id) DO NOTHING;
 
--- 4. CẤP QUYỀN TRUY CẬP CHO VAI TRÒ ANON VÀ AUTHENTICATED (BẮT BUỘC ĐỂ TRÁNH LỖI PERMISSION DENIED)
+-- Phòng mẫu mặc định cho các lớp
+INSERT INTO public.quiz_rooms (id, name, class_name, quiz_id, quiz_title, room_code, duration_minutes, notes)
+VALUES 
+  ('room-12a1', 'Phòng Ôn Tập Bài 7 HTML - Lớp 12A1', '12A1', 'bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', '121001', 20, 'Ôn tập trắc nghiệm Bài 7 có chấm điểm hệ số 1. Nộp bài trước 21h00.'),
+  ('room-12-1b', 'Phòng Kiểm Tra 15 Phút - Lớp 12/1B', '12/1B', 'bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', '121002', 20, 'Lớp 12/1B vào làm bài nghiêm túc, điểm lưu vĩnh viễn trên Supabase Cloud.'),
+  ('room-12a2', 'Phòng Luyện Thi Trắc Nghiệm - Lớp 12A2', '12A2', 'bai-7-html', 'Bài 7: HTML và Cấu Trúc Trang Web', '121003', 20, 'Luyện tập kỹ năng đọc và nhận biết thẻ HTML cấu trúc trang web.')
+ON CONFLICT (id) DO NOTHING;
+
+-- 5. CẤP QUYỀN TRUY CẬP CHO VAI TRÒ ANON VÀ AUTHENTICATED (BẮT BUỘC ĐỂ TRÁNH LỖI PERMISSION DENIED)
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT ALL ON TABLE public.student_attempts TO anon, authenticated;
+GRANT ALL ON TABLE public.quiz_rooms TO anon, authenticated;
 GRANT ALL ON TABLE public.quiz_questions TO anon, authenticated;
 GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
 
--- 5. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
+-- 6. KÍCH HOẠT ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.student_attempts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_rooms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_settings ENABLE ROW LEVEL SECURITY;
 
--- 6. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
+-- 7. CHÍNH SÁCH BẢO MẬT (RLS POLICIES)
+
+-- Học sinh và Giáo viên có thể đọc bảng điểm
 DROP POLICY IF EXISTS "Cho phep doc ket qua lam bai" ON public.student_attempts;
-CREATE POLICY "Cho phep doc ket qua lam bai" ON public.student_attempts FOR SELECT USING (true);
+CREATE POLICY "Cho phep doc ket qua lam bai" ON public.student_attempts
+    FOR SELECT USING (true);
 
+-- Cho phép học sinh gửi kết quả làm bài lên hệ thống
 DROP POLICY IF EXISTS "Cho phep them ket qua lam bai" ON public.student_attempts;
-CREATE POLICY "Cho phep them ket qua lam bai" ON public.student_attempts FOR INSERT WITH CHECK (true);
+CREATE POLICY "Cho phep them ket qua lam bai" ON public.student_attempts
+    FOR INSERT WITH CHECK (true);
 
+-- Cho phép xóa kết quả (dành cho giáo viên quản trị)
 DROP POLICY IF EXISTS "Cho phep quan ly xoa ket qua" ON public.student_attempts;
-CREATE POLICY "Cho phep quan ly xoa ket qua" ON public.student_attempts FOR DELETE USING (true);
+CREATE POLICY "Cho phep quan ly xoa ket qua" ON public.student_attempts
+    FOR DELETE USING (true);
 
+-- Cho phép cập nhật kết quả
 DROP POLICY IF EXISTS "Cho phep sua ket qua" ON public.student_attempts;
-CREATE POLICY "Cho phep sua ket qua" ON public.student_attempts FOR UPDATE USING (true);
+CREATE POLICY "Cho phep sua ket qua" ON public.student_attempts
+    FOR UPDATE USING (true);
 
+-- Quyền cho bảng phòng học (quiz_rooms)
+DROP POLICY IF EXISTS "Cho phep doc danh sach phong" ON public.quiz_rooms;
+CREATE POLICY "Cho phep doc danh sach phong" ON public.quiz_rooms
+    FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Cho phep them phong" ON public.quiz_rooms;
+CREATE POLICY "Cho phep them phong" ON public.quiz_rooms
+    FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Cho phep cap nhat phong" ON public.quiz_rooms;
+CREATE POLICY "Cho phep cap nhat phong" ON public.quiz_rooms
+    FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Cho phep xoa phong" ON public.quiz_rooms;
+CREATE POLICY "Cho phep xoa phong" ON public.quiz_rooms
+    FOR DELETE USING (true);
+
+-- Quyền đọc câu hỏi cho học sinh làm bài
 DROP POLICY IF EXISTS "Cho phep doc ngan hang cau hoi" ON public.quiz_questions;
-CREATE POLICY "Cho phep doc ngan hang cau hoi" ON public.quiz_questions FOR SELECT USING (true);
+CREATE POLICY "Cho phep doc ngan hang cau hoi" ON public.quiz_questions
+    FOR SELECT USING (true);
 
+-- Quyền quản lý câu hỏi (Thêm/Sửa/Xóa)
 DROP POLICY IF EXISTS "Cho phep quan ly cau hoi" ON public.quiz_questions;
-CREATE POLICY "Cho phep quan ly cau hoi" ON public.quiz_questions FOR ALL USING (true);
+CREATE POLICY "Cho phep quan ly cau hoi" ON public.quiz_questions
+    FOR ALL USING (true);
 
+-- Quyền đọc & cập nhật cài đặt
 DROP POLICY IF EXISTS "Cho phep doc cai dat" ON public.quiz_settings;
-CREATE POLICY "Cho phep doc cai dat" ON public.quiz_settings FOR SELECT USING (true);
+CREATE POLICY "Cho phep doc cai dat" ON public.quiz_settings
+    FOR SELECT USING (true);
 
+-- Cho phép cập nhật cài đặt
 DROP POLICY IF EXISTS "Cho phep cap nhat cai dat" ON public.quiz_settings;
-CREATE POLICY "Cho phep cap nhat cai dat" ON public.quiz_settings FOR ALL USING (true);
+CREATE POLICY "Cho phep cap nhat cai dat" ON public.quiz_settings
+    FOR ALL USING (true);
 
--- 7. BẬT TÍNH NĂNG REALTIME WEBSOCKET
-DO $$
+-- 8. BẬT TÍNH NĂNG REALTIME (ĐỂ GIÁO VIÊN NHẬN ĐIỂM HỌC SINH TỨC THÌ QUA WEBSOCKET)
+DO $
 BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.student_attempts;
 EXCEPTION WHEN OTHERS THEN
     NULL;
-END $$;`;
+END $;
+
+DO $
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.quiz_rooms;
+EXCEPTION WHEN OTHERS THEN
+    NULL;
+END $;`;
+
+    
+    function parseUrlJoinParameters() {
+      let hashStr = window.location.hash ? window.location.hash.substring(1) : '';
+      let searchStr = window.location.search ? window.location.search.substring(1) : '';
+      let combined = new URLSearchParams(searchStr);
+      if (hashStr) {
+        let hashParams = new URLSearchParams(hashStr);
+        for (let [k, v] of hashParams.entries()) {
+          combined.set(k, v);
+        }
+      }
+      return {
+        room: (combined.get('room') || '').trim(),
+        targetClass: (combined.get('class') || '').trim(),
+        quiz: (combined.get('quiz') || '').trim(),
+        cloud: (combined.get('cloud') || '').trim()
+      };
+    }
 
     function cleanSupabaseUrl(rawUrl) {
       if (!rawUrl) return '';
@@ -1525,20 +1925,13 @@ END $$;`;
       async init() {
         // 0. Auto-import from shared cloud link (#cloud=... or ?cloud=...)
         try {
-          let encodedCfg = '';
-          if (window.location.hash && window.location.hash.includes('cloud=')) {
-            encodedCfg = window.location.hash.split('cloud=')[1].split('&')[0];
-          } else {
-            const urlParams = new URLSearchParams(window.location.search);
-            encodedCfg = urlParams.get('cloud') || '';
-          }
-          if (encodedCfg) {
-            const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(encodedCfg)))));
+          const urlData = parseUrlJoinParameters();
+          if (urlData.cloud) {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(urlData.cloud)))));
             if (decoded.u && decoded.k) {
               this.url = cleanSupabaseUrl(decoded.u);
               this.anonKey = decoded.k.trim();
               localStorage.setItem(SUPABASE_CONFIG_KEY, JSON.stringify({ url: this.url, anonKey: this.anonKey }));
-              history.replaceState(null, '', window.location.pathname + window.location.search.replace(/[?&]cloud=[^&]+/, ''));
               console.log('[DatabaseService] Auto-imported Supabase credentials from shared link!');
             }
           }
@@ -1697,6 +2090,8 @@ END $$;`;
                 quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
                 studentName: row.student_name,
                 className: row.class_name,
+                roomId: row.room_id || null,
+                roomCode: row.room_code || null,
                 participationType: row.participation_type || 'GUEST',
                 score: parseFloat(row.score),
                 correctCount: row.correct_count,
@@ -1741,6 +2136,100 @@ END $$;`;
           }
         } catch (e) {
           console.warn('[DatabaseService] syncRemoteToLocal error:', e);
+        }
+      },
+
+      
+      getLocalRooms() {
+        try {
+          const raw = localStorage.getItem(ROOMS_STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {
+          console.warn('[DatabaseService] Error reading local rooms:', e);
+        }
+        localStorage.setItem(ROOMS_STORAGE_KEY, JSON.stringify(DEFAULT_ROOMS));
+        return DEFAULT_ROOMS;
+      },
+
+      saveLocalRooms(rooms) {
+        try {
+          localStorage.setItem(ROOMS_STORAGE_KEY, JSON.stringify(rooms));
+        } catch (e) {
+          console.error('[DatabaseService] Error saving local rooms:', e);
+        }
+      },
+
+      async getRooms(forceRemote = false) {
+        if (this.client && this.isOnline) {
+          try {
+            const { data, error } = await this.client
+              .from('quiz_rooms')
+              .select('*')
+              .order('created_at', { ascending: false });
+            if (!error && Array.isArray(data) && data.length > 0) {
+              const list = data.map(r => ({
+                id: r.id,
+                name: r.name,
+                className: r.class_name,
+                quizId: r.quiz_id,
+                quizTitle: r.quiz_title,
+                roomCode: r.room_code,
+                durationMinutes: r.duration_minutes || 20,
+                notes: r.notes || '',
+                isActive: r.is_active !== false,
+                createdAt: new Date(r.created_at).getTime()
+              }));
+              this.saveLocalRooms(list);
+              return list;
+            }
+          } catch (e) {
+            console.warn('[DatabaseService] Failed to fetch remote rooms:', e);
+          }
+        }
+        return this.getLocalRooms();
+      },
+
+      async saveRoom(room) {
+        const list = this.getLocalRooms();
+        const idx = list.findIndex(r => r.id === room.id);
+        if (idx >= 0) list[idx] = room;
+        else list.unshift(room);
+        this.saveLocalRooms(list);
+
+        if (this.client && this.isOnline) {
+          try {
+            const payload = {
+              id: room.id,
+              name: room.name,
+              class_name: room.className,
+              quiz_id: room.quizId,
+              quiz_title: room.quizTitle,
+              room_code: room.roomCode,
+              duration_minutes: room.durationMinutes || 20,
+              notes: room.notes || '',
+              is_active: room.isActive !== false
+            };
+            const { error } = await this.client.from('quiz_rooms').upsert(payload);
+            if (error) console.error('[DatabaseService] Save room error to Supabase:', error.message);
+          } catch (e) {
+            console.error('[DatabaseService] Network error saving room to Supabase:', e);
+          }
+        }
+      },
+
+      async deleteRoom(roomId) {
+        let list = this.getLocalRooms().filter(r => r.id !== roomId);
+        this.saveLocalRooms(list);
+        if (this.client && this.isOnline) {
+          try {
+            const { error } = await this.client.from('quiz_rooms').delete().eq('id', roomId);
+            if (error) console.error('[DatabaseService] Error deleting room from Supabase:', error);
+          } catch (e) {
+            console.error('[DatabaseService] Error deleting room:', e);
+          }
         }
       },
 
@@ -1818,6 +2307,8 @@ END $$;`;
                 quizTitle: 'Bài 7: HTML và Cấu Trúc Trang Web',
                 studentName: row.student_name,
                 className: row.class_name,
+                roomId: row.room_id || null,
+                roomCode: row.room_code || null,
                 participationType: row.participation_type || 'GUEST',
                 score: parseFloat(row.score),
                 correctCount: row.correct_count,
@@ -1851,6 +2342,8 @@ END $$;`;
               id: attempt.attemptId,
               student_name: attempt.studentName,
               class_name: attempt.className,
+              room_id: attempt.roomId || null,
+              room_code: attempt.roomCode || null,
               participation_type: attempt.participationType || 'GUEST',
               score: attempt.score,
               correct_count: attempt.correctCount,
@@ -2207,13 +2700,26 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
 
     function submitPinCode() {
       const pin = document.getElementById('pinCodeInput').value.trim();
-      const matched = sampleQuizzes.find(q => q.pinCode === pin);
-      if (matched) {
-        closeModal('modal-pin');
-        openGuestJoinModal(matched.id);
-      } else {
-        alert('Không tìm thấy bài tập nào với mã PIN này. Vui lòng nhập mã: 789123');
+      if (!pin) {
+        alert('Vui lòng nhập mã PIN phòng hoặc mã bài!');
+        return;
       }
+      // 1. Check class rooms first
+      const rooms = DatabaseService.getLocalRooms();
+      const matchedRoom = rooms.find(r => r.roomCode === pin);
+      if (matchedRoom) {
+        closeModal('modal-pin');
+        openGuestJoinModalForRoom(matchedRoom);
+        return;
+      }
+      // 2. Check sample quizzes
+      const matchedQuiz = sampleQuizzes.find(q => q.pinCode === pin);
+      if (matchedQuiz) {
+        closeModal('modal-pin');
+        openGuestJoinModal(matchedQuiz.id);
+        return;
+      }
+      alert('Không tìm thấy phòng học hoặc bài tập nào với mã này. Vui lòng kiểm tra lại mã PIN do giáo viên cung cấp!');
     }
 
     // Start Quiz Session
@@ -2248,6 +2754,8 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
         quizTitle: selectedQuiz.title,
         studentName: name,
         className: className,
+        roomId: window.ACTIVE_JOIN_ROOM ? window.ACTIVE_JOIN_ROOM.id : null,
+        roomCode: window.ACTIVE_JOIN_ROOM ? window.ACTIVE_JOIN_ROOM.roomCode : null,
         practiceMode: mode,
         questions: questions,
         currentIndex: 0,
@@ -2589,6 +3097,8 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
         quizTitle: currentSession.quizTitle || 'Bài 7: HTML và Cấu Trúc Trang Web',
         studentName: currentSession.studentName,
         className: currentSession.className,
+        roomId: currentSession.roomId || null,
+        roomCode: currentSession.roomCode || null,
         participationType: 'GUEST',
         score: scoreOutOf10,
         correctCount: correctCount,
@@ -2793,19 +3303,20 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
     }
 
     function switchDashboardTab(tabName) {
-      ['overview', 'results', 'questions', 'database', 'settings'].forEach(t => {
+      ['overview', 'rooms', 'results', 'questions', 'database', 'settings'].forEach(t => {
         const el = document.getElementById(`dashTab-${t}`);
         const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
         if (el) el.classList.add('hidden');
-        if (btn) btn.className = 'pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition';
+        if (btn) btn.className = 'pb-3 text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition whitespace-nowrap';
       });
 
       const activeEl = document.getElementById(`dashTab-${tabName}`);
       const activeBtn = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Btn`);
       if (activeEl) activeEl.classList.remove('hidden');
-      if (activeBtn) activeBtn.className = 'pb-3 text-quiz-purple border-b-2 border-quiz-purple transition';
+      if (activeBtn) activeBtn.className = 'pb-3 text-quiz-purple border-b-2 border-quiz-purple transition whitespace-nowrap';
 
       if (tabName === 'overview') loadDashboardOverview();
+      if (tabName === 'rooms') renderRoomsDashboard();
       if (tabName === 'results') renderResultsTable();
       if (tabName === 'questions') renderQuestionsManager();
       if (tabName === 'database') {
@@ -3359,6 +3870,466 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
       }
     }
 
+    
+    // ================= CLASS ROOMS & LIVE REPORTING LOGIC =================
+    let currentActiveReportRoomId = null;
+    window.ACTIVE_JOIN_ROOM = null;
+
+    function getRoomShareableLink(room) {
+      let url = DatabaseService.url || (document.getElementById('supabaseUrlInput')?.value || '').trim();
+      let key = DatabaseService.anonKey || (document.getElementById('supabaseKeyInput')?.value || '').trim();
+      if (!url || !key) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(SUPABASE_CONFIG_KEY) || '{}');
+          if (saved.url) url = saved.url;
+          if (saved.anonKey) key = saved.anonKey;
+        } catch (e) {}
+      }
+      if (!url) {
+        url = 'https://scwlgkhldtpdeowkcpzs.supabase.co';
+      }
+
+      const base = window.location.origin + window.location.pathname;
+      let hashParts = [
+        `room=${room.roomCode}`,
+        `class=${encodeURIComponent(room.className)}`,
+        `quiz=${encodeURIComponent(room.quizId)}`
+      ];
+
+      if (url && key) {
+        const cloudPayload = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({ u: url, k: key })))));
+        hashParts.push(`cloud=${cloudPayload}`);
+      }
+      return `${base}#${hashParts.join('&')}`;
+    }
+
+    function openCreateRoomModal() {
+      document.getElementById('newRoomClassName').value = '';
+      document.getElementById('newRoomName').value = '';
+      document.getElementById('newRoomQuizSelect').value = 'bai-7-html';
+      document.getElementById('newRoomCode').value = generateRandomRoomCodeNumber();
+      document.getElementById('newRoomDuration').value = 20;
+      document.getElementById('newRoomNotes').value = '';
+      document.getElementById('newRoomError').classList.add('hidden');
+      openModal('modal-create-room');
+    }
+
+    function generateRandomRoomCodeNumber() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+
+    function generateRandomRoomCode() {
+      const code = generateRandomRoomCodeNumber();
+      document.getElementById('newRoomCode').value = code;
+    }
+
+    async function saveRoomFromModal() {
+      const className = document.getElementById('newRoomClassName').value.trim();
+      const name = document.getElementById('newRoomName').value.trim();
+      const quizId = document.getElementById('newRoomQuizSelect').value;
+      const roomCode = document.getElementById('newRoomCode').value.trim();
+      const duration = parseInt(document.getElementById('newRoomDuration').value, 10) || 20;
+      const notes = document.getElementById('newRoomNotes').value.trim();
+      const errEl = document.getElementById('newRoomError');
+
+      if (!className) {
+        errEl.innerText = 'Vui lòng nhập tên lớp học (Ví dụ: 12A1, 12/1B)!';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (!name) {
+        errEl.innerText = 'Vui lòng nhập tên phòng hoặc buổi kiểm tra!';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (!roomCode || roomCode.length < 4) {
+        errEl.innerText = 'Vui lòng nhập mã số phòng (tối thiểu 4-6 chữ số)!';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const selectedQuiz = sampleQuizzes.find(q => q.id === quizId) || sampleQuizzes[0];
+      const newRoom = {
+        id: 'room-' + Date.now(),
+        name: name,
+        className: className,
+        quizId: quizId,
+        quizTitle: selectedQuiz.title,
+        roomCode: roomCode,
+        durationMinutes: duration,
+        notes: notes,
+        isActive: true,
+        createdAt: Date.now()
+      };
+
+      await DatabaseService.saveRoom(newRoom);
+      closeModal('modal-create-room');
+      await renderRoomsDashboard();
+      showToast(`✅ Đã tạo phòng lớp ${className} (Mã: ${roomCode}) thành công!`);
+
+      // Automatically copy shareable link for teacher convenience
+      const link = getRoomShareableLink(newRoom);
+      copyToClipboard(link, `Đã tạo phòng và sao chép link giao bài cho Lớp ${className}! Link tự động kích hoạt 'Supabase Cloud: Đã kết nối'.`);
+    }
+
+    async function renderRoomsDashboard() {
+      const container = document.getElementById('roomsGridContainer');
+      if (!container) return;
+
+      const rooms = await DatabaseService.getRooms();
+      const attempts = DatabaseService.getLocalAttempts();
+
+      const badge = document.getElementById('roomsCountBadge');
+      if (badge) badge.innerText = `${rooms.length} phòng đang hoạt động`;
+
+      if (rooms.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-white p-8 rounded-2xl border border-slate-100 text-center space-y-3">
+            <div class="w-12 h-12 bg-purple-50 text-quiz-purple rounded-2xl flex items-center justify-center mx-auto text-xl">
+              <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+            <h4 class="font-bold text-slate-800">Chưa có phòng học nào được tạo</h4>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto">Tạo phòng riêng cho từng lớp để theo dõi điểm độc lập và gửi link chuyên biệt cho học sinh.</p>
+            <button onclick="openCreateRoomModal()" class="px-4 py-2 rounded-xl bg-quiz-purple text-white font-bold text-xs hover:bg-quiz-darkPurple transition">
+              + Tạo Phòng Đầu Tiên
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = rooms.map(room => {
+        // Compute stats for this room/class
+        const classAttempts = attempts.filter(a => 
+          (a.roomCode && a.roomCode === room.roomCode) ||
+          (a.className && a.className.trim().toLowerCase() === room.className.trim().toLowerCase())
+        );
+
+        const count = classAttempts.length;
+        let avgScore = 0;
+        let avgAcc = 0;
+        let maxScore = 0;
+        if (count > 0) {
+          const sumScore = classAttempts.reduce((acc, a) => acc + (a.score || 0), 0);
+          const sumAcc = classAttempts.reduce((acc, a) => acc + (a.accuracyRate || 0), 0);
+          avgScore = (sumScore / count).toFixed(1);
+          avgAcc = (sumAcc / count).toFixed(1);
+          maxScore = Math.max(...classAttempts.map(a => a.score || 0)).toFixed(1);
+        }
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4 hover:shadow-md transition flex flex-col justify-between">
+            <div class="space-y-3">
+              <!-- Top Badges -->
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-quiz-purple to-indigo-600 text-white shadow-sm">
+                  LỚP ${room.className}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Supabase Cloud: Đã kết nối</span>
+                </span>
+              </div>
+
+              <!-- Room Title & Quiz -->
+              <div>
+                <h4 class="font-extrabold text-sm sm:text-base text-slate-900 line-clamp-1">${room.name}</h4>
+                <p class="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                  <i class="fa-solid fa-book-open text-quiz-purple text-[11px]"></i>
+                  <span class="line-clamp-1">${room.quizTitle}</span>
+                </p>
+              </div>
+
+              <!-- Room PIN Box -->
+              <div class="p-3 bg-purple-50/70 rounded-xl border border-purple-100 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] font-bold text-purple-700 uppercase tracking-wider block">Mã Số Phòng (PIN)</span>
+                  <span class="text-lg font-black font-mono tracking-wider text-quiz-darkPurple">${room.roomCode}</span>
+                </div>
+                <button onclick="copyRoomPin('${room.roomCode}')" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-purple-100 text-quiz-purple font-bold text-[11px] border border-purple-200 shadow-sm transition flex items-center gap-1">
+                  <i class="fa-solid fa-copy"></i>
+                  <span>Copy PIN</span>
+                </button>
+              </div>
+
+              <!-- Live Class Stats -->
+              <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1 border-t border-slate-100">
+                <div class="p-2 rounded-lg bg-slate-50">
+                  <span class="text-[10px] text-slate-400 block font-semibold">Đã nộp</span>
+                  <strong class="text-slate-800 font-black text-sm">${count}</strong>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50">
+                  <span class="text-[10px] text-slate-400 block font-semibold">Điểm TB</span>
+                  <strong class="text-quiz-purple font-black text-sm">${avgScore}</strong>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50">
+                  <span class="text-[10px] text-slate-400 block font-semibold">Cao nhất</span>
+                  <strong class="text-emerald-600 font-black text-sm">${maxScore}</strong>
+                </div>
+              </div>
+
+              ${room.notes ? `<p class="text-[11px] text-slate-400 italic bg-slate-50/80 p-2 rounded-lg line-clamp-2">" ${room.notes} "</p>` : ''}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+              <button onclick="copyRoomShareableLink('${room.id}')" class="w-full py-2.5 rounded-xl bg-quiz-purple hover:bg-quiz-darkPurple text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition shadow-sm">
+                <i class="fa-solid fa-share-nodes"></i>
+                <span>Sao Chép Link Giao Bài Cho Lớp</span>
+              </button>
+
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="viewClassRoomReport('${room.id}')" class="py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-quiz-purple font-bold text-xs flex items-center justify-center space-x-1 border border-purple-200 transition">
+                  <i class="fa-solid fa-chart-column"></i>
+                  <span>Báo Cáo Điểm</span>
+                </button>
+                <button onclick="exportClassRoomCsv('${room.id}')" class="py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center space-x-1 border border-emerald-200 transition">
+                  <i class="fa-solid fa-file-excel"></i>
+                  <span>Xuất Excel</span>
+                </button>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button onclick="deleteRoom('${room.id}')" class="text-[11px] text-slate-400 hover:text-quiz-red font-medium flex items-center gap-1 transition">
+                  <i class="fa-solid fa-trash-can"></i>
+                  <span>Xóa phòng</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function copyRoomPin(code) {
+      copyToClipboard(code, `Đã sao chép mã PIN phòng: ${code}`);
+    }
+
+    function copyRoomShareableLink(roomId) {
+      const rooms = DatabaseService.getLocalRooms();
+      const room = rooms.find(r => r.id === roomId);
+      if (!room) return;
+      const link = getRoomShareableLink(room);
+      copyToClipboard(link, `Đã sao chép Link Phòng Lớp ${room.className}! Học sinh bấm vào link sẽ tự động ở trạng thái 'Supabase Cloud: Đã kết nối'.`);
+    }
+
+    async function deleteRoom(roomId) {
+      const rooms = DatabaseService.getLocalRooms();
+      const room = rooms.find(r => r.id === roomId);
+      const name = room ? room.name : 'phòng này';
+      if (confirm(`Bạn có chắc chắn muốn xóa ${name}? (Kết quả điểm học sinh vẫn được bảo lưu).`)) {
+        await DatabaseService.deleteRoom(roomId);
+        await renderRoomsDashboard();
+        showToast('Đã xóa phòng học.');
+      }
+    }
+
+    function viewClassRoomReport(roomId) {
+      currentActiveReportRoomId = roomId;
+      const rooms = DatabaseService.getLocalRooms();
+      const room = rooms.find(r => r.id === roomId);
+      if (!room) return;
+
+      document.getElementById('roomsMainContainer').classList.add('hidden');
+      document.getElementById('roomClassReportView').classList.remove('hidden');
+
+      document.getElementById('reportClassBadge').innerText = 'LỚP ' + room.className;
+      document.getElementById('reportRoomPinBadge').innerText = 'Mã PIN: ' + room.roomCode;
+      document.getElementById('reportRoomTitle').innerText = room.name;
+      document.getElementById('reportRoomQuizName').innerText = 'Bài làm: ' + room.quizTitle;
+
+      renderClassReportTable();
+      window.scrollTo(0, 0);
+    }
+
+    function closeClassRoomReport() {
+      currentActiveReportRoomId = null;
+      document.getElementById('roomClassReportView').classList.add('hidden');
+      document.getElementById('roomsMainContainer').classList.remove('hidden');
+      renderRoomsDashboard();
+    }
+
+    function copyCurrentReportRoomLink() {
+      if (!currentActiveReportRoomId) return;
+      copyRoomShareableLink(currentActiveReportRoomId);
+    }
+
+    function exportCurrentReportRoomCsv() {
+      if (!currentActiveReportRoomId) return;
+      exportClassRoomCsv(currentActiveReportRoomId);
+    }
+
+    function renderClassReportTable() {
+      if (!currentActiveReportRoomId) return;
+      const rooms = DatabaseService.getLocalRooms();
+      const room = rooms.find(r => r.id === currentActiveReportRoomId);
+      if (!room) return;
+
+      const allAttempts = DatabaseService.getLocalAttempts();
+      const classAttempts = allAttempts.filter(a => 
+        (a.roomCode && a.roomCode === room.roomCode) ||
+        (a.className && a.className.trim().toLowerCase() === room.className.trim().toLowerCase())
+      );
+
+      // KPIs
+      const totalCount = classAttempts.length;
+      document.getElementById('classKpiTotal').innerText = totalCount;
+
+      let avgScore = 0;
+      let avgAcc = 0;
+      let highLow = '0 / 0';
+      let rankG = 0, rankK = 0, rankTB = 0, rankY = 0;
+
+      if (totalCount > 0) {
+        const scores = classAttempts.map(a => a.score || 0);
+        const sum = scores.reduce((acc, s) => acc + s, 0);
+        const accSum = classAttempts.reduce((acc, a) => acc + (a.accuracyRate || 0), 0);
+        avgScore = (sum / totalCount).toFixed(1);
+        avgAcc = (accSum / totalCount).toFixed(1) + '%';
+        highLow = `${Math.max(...scores).toFixed(1)} / ${Math.min(...scores).toFixed(1)}`;
+
+        scores.forEach(s => {
+          if (s >= 8.0) rankG++;
+          else if (s >= 6.5) rankK++;
+          else if (s >= 5.0) rankTB++;
+          else rankY++;
+        });
+      }
+
+      document.getElementById('classKpiAvgScore').innerText = avgScore;
+      document.getElementById('classKpiAvgAcc').innerText = avgAcc;
+      document.getElementById('classKpiHighLow').innerText = highLow;
+
+      // Rank Bars
+      const gPct = totalCount ? Math.round((rankG / totalCount) * 100) : 0;
+      const kPct = totalCount ? Math.round((rankK / totalCount) * 100) : 0;
+      const tbPct = totalCount ? Math.round((rankTB / totalCount) * 100) : 0;
+      const yPct = totalCount ? Math.round((rankY / totalCount) * 100) : 0;
+
+      document.getElementById('classRankBars').innerHTML = `
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+          <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-100">
+            <span class="text-emerald-700 font-bold block">Giỏi (8.0 - 10)</span>
+            <span class="font-extrabold text-slate-800 text-xs">${rankG} HS (${gPct}%)</span>
+          </div>
+          <div class="p-2 rounded-lg bg-purple-50 border border-purple-100">
+            <span class="text-quiz-purple font-bold block">Khá (6.5 - 7.9)</span>
+            <span class="font-extrabold text-slate-800 text-xs">${rankK} HS (${kPct}%)</span>
+          </div>
+          <div class="p-2 rounded-lg bg-amber-50 border border-amber-100">
+            <span class="text-amber-700 font-bold block">Trung bình (5.0 - 6.4)</span>
+            <span class="font-extrabold text-slate-800 text-xs">${rankTB} HS (${tbPct}%)</span>
+          </div>
+          <div class="p-2 rounded-lg bg-red-50 border border-red-100">
+            <span class="text-quiz-red font-bold block">Chưa đạt (&lt; 5.0)</span>
+            <span class="font-extrabold text-slate-800 text-xs">${rankY} HS (${yPct}%)</span>
+          </div>
+        </div>
+      `;
+
+      // Filter by search
+      const q = (document.getElementById('reportClassSearchInput')?.value || '').toLowerCase().trim();
+      const filtered = classAttempts.filter(a => !q || (a.studentName || '').toLowerCase().includes(q));
+
+      const tbody = document.getElementById('classReportTableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-slate-400">Chưa có kết quả làm bài nào của lớp này. Hãy sao chép link phòng gửi cho học sinh!</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((a, i) => {
+        const d = new Date(a.submittedAt).toLocaleString('vi-VN');
+        const min = Math.floor(a.durationSeconds / 60);
+        const sec = a.durationSeconds % 60;
+        const durStr = `${min}m ${sec}s`;
+        const scoreColor = a.score >= 8 ? 'text-emerald-600 bg-emerald-50' : (a.score >= 5 ? 'text-quiz-purple bg-purple-50' : 'text-quiz-red bg-red-50');
+
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3.5 font-bold text-slate-400">${i + 1}</td>
+            <td class="p-3.5 font-black text-slate-900">${a.studentName}</td>
+            <td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-quiz-darkPurple">Lớp ${a.className}</span></td>
+            <td class="p-3.5 text-slate-500">${a.practiceMode || 'INSTANT'}</td>
+            <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg font-black text-sm ${scoreColor}">${a.score} / 10</span></td>
+            <td class="p-3.5 font-semibold text-slate-700">${a.correctCount} / ${a.totalPoints || 26} (${a.accuracyRate}%)</td>
+            <td class="p-3.5 text-slate-500 font-mono">${durStr}</td>
+            <td class="p-3.5 text-slate-400">${d}</td>
+            <td class="p-3.5 text-center">
+              <button onclick="deleteClassAttempt('${a.attemptId}')" class="text-slate-400 hover:text-quiz-red p-1 transition" title="Xóa kết quả">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function deleteClassAttempt(attemptId) {
+      if (confirm('Xóa kết quả làm bài này khỏi cơ sở dữ liệu?')) {
+        await DatabaseService.deleteAttempt(attemptId);
+        renderClassReportTable();
+        await loadDashboardOverview();
+        showToast('Đã xóa kết quả làm bài.');
+      }
+    }
+
+    function exportClassRoomCsv(roomId) {
+      const rooms = DatabaseService.getLocalRooms();
+      const room = rooms.find(r => r.id === roomId);
+      if (!room) return;
+
+      const attempts = DatabaseService.getLocalAttempts().filter(a => 
+        (a.roomCode && a.roomCode === room.roomCode) ||
+        (a.className && a.className.trim().toLowerCase() === room.className.trim().toLowerCase())
+      );
+
+      let csv = 'STT,Họ và tên,Lớp,Mã Phòng,Chế độ làm bài,Điểm số (/10),Số câu đúng,Tổng số câu,Tỷ lệ (%),Thời gian làm bài (giây),Ngày nộp\n';
+      attempts.forEach((a, i) => {
+        const d = new Date(a.submittedAt).toLocaleString('vi-VN');
+        csv += `${i + 1},"${a.studentName}","${a.className}","${room.roomCode}","${a.practiceMode || 'GUEST'}",${a.score},${a.correctCount},${a.totalPoints || 26},${a.accuracyRate},${a.durationSeconds},"${d}"\n`;
+      });
+
+      // Add UTF-8 BOM so Excel opens Vietnamese characters cleanly
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Bang_diem_Lop_${room.className}_Phong_${room.roomCode}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast(`✅ Đã xuất bảng điểm Lớp ${room.className} thành công!`);
+    }
+
+    function openGuestJoinModalForRoom(room) {
+      window.ACTIVE_JOIN_ROOM = room;
+      const selectEl = document.getElementById('guestQuizSelect');
+      if (selectEl) selectEl.value = room.quizId || 'bai-7-html';
+
+      const classInput = document.getElementById('guestClassInput');
+      if (classInput) {
+        classInput.value = room.className;
+      }
+
+      const banner = document.getElementById('guestRoomInfoBanner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        document.getElementById('guestRoomBannerTitle').innerText = `Phòng: ${room.name} • Lớp ${room.className}`;
+        document.getElementById('guestRoomBannerCode').innerText = `MÃ: ${room.roomCode}`;
+        document.getElementById('guestRoomBannerDesc').innerText = room.notes || 'Lớp học và bài làm đã được giáo viên phân công tự động.';
+      }
+
+      document.getElementById('guestModalQuizTitle').innerText = room.quizTitle || 'Bài 7: HTML và Cấu Trúc Trang Web';
+      document.getElementById('guestJoinError').classList.add('hidden');
+      openModal('modal-guest-join');
+
+      // Focus on name input for fast participation
+      setTimeout(() => {
+        const nameInput = document.getElementById('guestNameInput');
+        if (nameInput) nameInput.focus();
+      }, 300);
+    }
+
     function exportCsvData() {
       const attempts = DatabaseService.getLocalAttempts();
       let csv = 'STT,Họ và tên,Lớp,Hình thức,Điểm số (/10),Số câu đúng,Tổng số câu,Tỷ lệ (%),Thời gian (giây),Ngày nộp\n';
@@ -3401,6 +4372,33 @@ GRANT ALL ON TABLE public.quiz_settings TO anon, authenticated;
       const pre = document.getElementById('sqlSchemaPreBlock');
       if (pre) pre.innerText = SQL_SCHEMA_CONTENT;
       await DatabaseService.init();
+
+      // Check if student or teacher opened a direct room link
+      try {
+        const urlParams = parseUrlJoinParameters();
+        if (urlParams.room || urlParams.targetClass) {
+          const rooms = DatabaseService.getLocalRooms();
+          let matchedRoom = null;
+          if (urlParams.room) {
+            matchedRoom = rooms.find(r => r.roomCode === urlParams.room);
+          }
+          if (!matchedRoom && urlParams.targetClass) {
+            matchedRoom = rooms.find(r => r.className.trim().toLowerCase() === urlParams.targetClass.trim().toLowerCase());
+          }
+
+          if (matchedRoom) {
+            openGuestJoinModalForRoom(matchedRoom);
+            showToast(`🏫 Đã nhận diện Phòng Lớp ${matchedRoom.className} (Mã: ${matchedRoom.roomCode}). Supabase Cloud: Đã kết nối!`);
+          } else if (urlParams.targetClass) {
+            const classInput = document.getElementById('guestClassInput');
+            if (classInput) classInput.value = urlParams.targetClass;
+            openGuestJoinModal(urlParams.quiz || 'bai-7-html');
+            showToast(`🏫 Đã nhận diện Lớp ${urlParams.targetClass}. Supabase Cloud: Đã kết nối!`);
+          }
+        }
+      } catch (err) {
+        console.warn('Error handling room url params:', err);
+      }
     });
   </script>
 
